@@ -20,7 +20,7 @@ public class GameLogic {
 	}
 	public static void run(){
 		thisGame.addPlayer(new Player());
-		thisGame.addPlayer(new Player("Kris",false));
+		thisGame.addPlayer(new Player());
 		thisGame.dealHand(deck);
 		thisGame.dealHand(deck);
 		game.setPlayerName(thisGame.getPlayer().getName());
@@ -30,7 +30,24 @@ public class GameLogic {
 		long wait;
 		
 		while(running){
-			
+			if(thisGame.getTurn().isNPC()){
+				if(thisGame.getTurn().getHandValue()<21){
+					// NPC logic.
+					if(thisGame.getTurn().isNPC())
+						if(thisGame.getTurn().canSplit()&& thisGame.getTurn() != thisGame.getDealer())
+							thisGame.getTurn().splitHand();
+						while(thisGame.getTurn().getHandValue()<17){
+							thisGame.getTurn().receiveCard(deck.dealCard());
+						}
+						while(thisGame.getTurn().getSplitHandValue()<17 && thisGame.getTurn().hasSplitHand()){
+							thisGame.getTurn().receiveSplitHandCard(deck.dealCard());
+						}
+						BlackjackLogic.endTurn();
+					// First check if can split, implement split logic.
+					// Check if can double down, implement double down logic.
+					// This is where the interaction with the GUI hit / stay should go.
+				}
+			}
 			start = System.nanoTime();
 			elapsed = System.nanoTime() - start;
 			wait = (targetTime  - elapsed / 1000000 < 0 ? 5 : targetTime - elapsed / 1000000)*60;	//every second
@@ -45,7 +62,9 @@ public class GameLogic {
 			
 			//When player has hit
 			if(game.getHit()){
-				
+				thisGame.getTurn().receiveCard(deck.dealCard());
+				if(thisGame.getTurn().getHandValue()>21)
+					BlackjackLogic.endTurn();
 				game.resetHit();
 			}
 			else{
@@ -53,15 +72,15 @@ public class GameLogic {
 			}
 			//when player has stayed
 			if(game.getStay()){
-				
+				BlackjackLogic.endTurn();
 				game.resetHit();
 			}
 			else{
 				
 			}
 			//when player has split
-			if(game.getSplit()){
-				
+			if(game.getIncrease()){
+				thisGame.getTurn().increaseBet(100);
 				game.resetHit();
 			}
 			else{
@@ -99,20 +118,20 @@ public class GameLogic {
 			
 			
 			//logic so player can't decrease bet once they have kept their bet
-			if(true){
-				game.DisableDecrease();
+			if(thisGame.getTurn().firstHandShowing() && thisGame.getTurn().getBet()>0){
+				game.EnableDecrease();
 			}
 			else{
-				game.EnableDecrease();
+				game.DisableDecrease();
 			}
 			
 			
 			//logic so player can't increase bet passed their chip count
-			if(true){
-				game.DisableIncrease();
+			if(thisGame.getTurn().firstHandShowing() && thisGame.getTurn().getBet()<thisGame.getTurn().getChips()){
+				game.EnableIncrease();
 			}
 			else{
-				game.EnableIncrease();
+				game.DisableIncrease();
 			}
 			
 			//logic for allowing player to split
@@ -144,5 +163,6 @@ public class GameLogic {
 		game.setPlayerCards(thisGame.getPlayer().getHand());
 		game.setDealerCards(thisGame.getDealer().getHand());
 		game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+		game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
 	}
 }

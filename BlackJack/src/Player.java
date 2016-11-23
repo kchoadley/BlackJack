@@ -31,11 +31,13 @@ public class Player {
 			this.name = DEALER;
 			this.chips = 0;
 			this.bet = 0;
+			this.npc = true;
 		}
 		else{
 			this.name = "Player" + players;
 			this.chips = 5000;
 			this.bet = 200;
+			this.npc = false;
 		}
 		players++;
 		this.hand = new Card[24];
@@ -45,7 +47,6 @@ public class Player {
 		this.aces = false;
 		this.splitHandAces = false;
 		this.hasSplitHand = false;
-		this.npc=true;
 		this.firstHandShowing = true;
 		this.roundsPlayed = 0;
 		this.maxChips = this.chips;
@@ -150,11 +151,28 @@ public class Player {
 		this.bet = bet;
 	}
 	/**
+	 * Changes the amount bet by player.
+	 * @param bet by player
+	 */
+	public void decreaseBet(int bet){
+		this.bet -= bet;
+	}
+	/**
+	 * Changes the amount bet by player.
+	 * @param bet by player
+	 */
+	public void increaseBet(int bet){
+		this.bet += bet;
+	}
+	/**
 	 * Returns the current bet of this player.
 	 * @return bet of this player
 	 */
 	public int getBet(){
 		return this.bet;
+	}
+	public boolean firstHandShowing(){
+		return firstHandShowing;
 	}
 	/**
 	 * Returns true if this player is Non-Player Character.
@@ -179,6 +197,7 @@ public class Player {
 	 * Should only be called after an if(player.canSplit())
 	 */
 	public void splitHand(){
+		firstHandShowing = false;
 		this.hasSplitHand = true;
 		this.receiveSplitHandCard(this.hand[--top]);
 		this.splitHandAces = this.aces;
@@ -224,6 +243,8 @@ public class Player {
 	 */
 	public void receiveCard(Card card){
 		hand[top++] = card;
+		if(top > 2)
+			this.firstHandShowing = false;
 		if(card.face == Card.Face.ACE){
 			aces = true;
 		}

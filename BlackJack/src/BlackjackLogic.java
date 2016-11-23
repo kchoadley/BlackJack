@@ -17,7 +17,8 @@
 public class BlackjackLogic {
 	// Initialize class variables.
 	Player[] players;
-	private int top;
+	private static int top;
+	private static int turn;
 	private int rounds;
 	private StringBuilder endResults;
 	private static Deck deck;
@@ -25,11 +26,12 @@ public class BlackjackLogic {
 	 * Default constructor contains 2 players.
 	 */
 	public BlackjackLogic(){
-		this.top = 0;
+		top = 0;
 		this.players = new Player[2];
 		this.rounds = 1;
+		turn = -1;
 		this.endResults = new StringBuilder("This is the end results\n");
-		this.deck = Deck.getInstance();
+		deck = Deck.getInstance();
 		deck.shuffle();
 	}
 	/**
@@ -37,11 +39,12 @@ public class BlackjackLogic {
 	 * @param i number of players
 	 */
 	public BlackjackLogic(int players){
-		this.top = 0;
+		top = 0;
 		this.players = new Player[players];
 		this.rounds = 1;
+		turn = -1;
 		this.endResults = new StringBuilder("This is the end results\n");
-		this.deck = Deck.getInstance();
+		deck = Deck.getInstance();
 		for(int i = 3; players>=i;i+=2)
 			deck.addDeck();
 		deck.shuffle();
@@ -52,6 +55,7 @@ public class BlackjackLogic {
 	 */
 	public void addPlayer(Player player){
 		players[top++] = player;
+		turn++;
 	}
 	/**
 	 * Return the player in the array at spot i.
@@ -103,6 +107,16 @@ public class BlackjackLogic {
 			players[i].discardHand();
 		}
 		this.incrementRounds();
+	}
+	public static void endTurn(){
+		if(turn == 0){
+			turn = top-1;
+		}
+		else
+			turn--;
+	}
+	public Player getTurn(){
+		return this.getPlayer(turn);
 	}
 	/**
 	 * Returns the number of hands played.
@@ -163,7 +177,7 @@ public class BlackjackLogic {
 		return false;
 	}
 	// Runs the game.
-	public static void main(String args[]){
+	/*public static void main(String args[]){
 		// Initialize deck and players.
 		BlackjackLogic thisGame = new BlackjackLogic(5);
 		thisGame.addPlayer(new Player());
@@ -259,5 +273,5 @@ public class BlackjackLogic {
 		}while(thisGame.someoneHasChips());
 		System.out.println("Deck minimum cards at any point: " + deckMinimum);
 		System.out.println(thisGame.toString());
-	}
+	}*/
 }

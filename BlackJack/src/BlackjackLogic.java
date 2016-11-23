@@ -20,30 +20,37 @@ public class BlackjackLogic {
 	private int top;
 	private int rounds;
 	private StringBuilder endResults;
+	private static Deck deck;
 	/**
 	 * Default constructor contains 2 players.
 	 */
-	private BlackjackLogic(){
+	public BlackjackLogic(){
 		this.top = 0;
 		this.players = new Player[2];
 		this.rounds = 1;
 		this.endResults = new StringBuilder("This is the end results\n");
+		this.deck = Deck.getInstance();
+		deck.shuffle();
 	}
 	/**
 	 * Constructor has input for number of players.
 	 * @param i number of players
 	 */
-	private BlackjackLogic(int i){
+	public BlackjackLogic(int players){
 		this.top = 0;
-		this.players = new Player[i];
+		this.players = new Player[players];
 		this.rounds = 1;
 		this.endResults = new StringBuilder("This is the end results\n");
+		this.deck = Deck.getInstance();
+		for(int i = 3; players>=i;i+=2)
+			deck.addDeck();
+		deck.shuffle();
 	}
 	/**
 	 * Adds a player to the game.
 	 * @param player
 	 */
-	private void addPlayer(Player player){
+	public void addPlayer(Player player){
 		players[top++] = player;
 	}
 	/**
@@ -51,7 +58,23 @@ public class BlackjackLogic {
 	 * @param i place in array
 	 * @return Player
 	 */
-	private Player getPlayer(int i){
+	public Player getPlayer(){
+		return this.players[1];
+	}
+	/**
+	 * Return the player in the array at spot i.
+	 * @param i place in array
+	 * @return Player
+	 */
+	public Player getDealer(){
+		return this.players[0];
+	}
+	/**
+	 * Return the player in the array at spot i.
+	 * @param i place in array
+	 * @return Player
+	 */
+	public Player getPlayer(int i){
 		if(i<top)
 			return this.players[i];
 		return null;
@@ -60,14 +83,14 @@ public class BlackjackLogic {
 	 * Returns the number of players.
 	 * @return number of players
 	 */
-	private int getPlayers(){
+	public int getPlayers(){
 		return top;
 	}
 	/**
 	 * Deals 1 card from the deck to each player.
 	 * @param deck deals card to each player
 	 */
-	private void dealHand(Deck deck){
+	public void dealHand(Deck deck){
 		for(int i = 0; i < top; i ++){
 			players[i].receiveCard(deck.dealCard());
 		}
@@ -75,7 +98,7 @@ public class BlackjackLogic {
 	/**
 	 * Has each player discard their current hand.
 	 */
-	private void discardHands(){
+	public void discardHands(){
 		for(int i = 0; i < top; i ++){
 			players[i].discardHand();
 		}
@@ -91,14 +114,14 @@ public class BlackjackLogic {
 	/**
 	 * Increases hands by 1.
 	 */
-	private void incrementRounds(){
+	public void incrementRounds(){
 		this.rounds++;
 	}
 	/**
 	 * Builds a String representation of each player's hand.
 	 * @return
 	 */
-	private String allHandstoString(){
+	public String allHandstoString(){
 		StringBuilder s = new StringBuilder("");
 		s.append("This is hand: " + this.rounds+" There are "+Deck.getInstance().cardsLeft()+" cards left in deck." + "\n");
 		for(int i = 0; i < top; i ++){
@@ -134,7 +157,7 @@ public class BlackjackLogic {
 	 * Checks to see if at least 1 player has enough chips for the next hand.
 	 * @return
 	 */
-	private boolean someoneHasChips(){
+	public boolean someoneHasChips(){
 		if(this.getPlayers()>1)
 			return true;
 		return false;
@@ -142,7 +165,6 @@ public class BlackjackLogic {
 	// Runs the game.
 	public static void main(String args[]){
 		// Initialize deck and players.
-		Deck deck = Deck.getInstance();
 		BlackjackLogic thisGame = new BlackjackLogic(5);
 		thisGame.addPlayer(new Player());
 		thisGame.addPlayer(new Player("Ted",true));
@@ -153,10 +175,7 @@ public class BlackjackLogic {
 		thisGame.addPlayer(new Player("Kailab",true));
 		thisGame.getPlayer(4).setBet(500);
 		// Sets number of decks to increase by 1 for every 3 players.
-		for(int i = 3; thisGame.getPlayers()>=i;i+=2){
-			deck.addDeck();
-		}
-		deck.shuffle();
+		
 		// Tracks minimum number of cards in deck at any point.
 		int deckMinimum = 52*deck.getDecks();
 		// Game loop.

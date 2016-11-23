@@ -1,15 +1,17 @@
 
 public class GameLogic {
-
 	private static Thread thread;
 	private static boolean running;
 	private static int FPS = 60;
 	private static long targetTime = 1000/FPS;
 	private static BlackJackGUI game;
+	private static BlackjackLogic thisGame;
+	private static Deck deck = Deck.getInstance();
 	
 	public static int countDown = 1000;
 
 	public static void main(String[] args){
+		thisGame = new BlackjackLogic();
 		game = new BlackJackGUI();
 		game.setSize(400,600);
 		running = true;
@@ -17,7 +19,12 @@ public class GameLogic {
 		
 	}
 	public static void run(){
-		
+		thisGame.addPlayer(new Player());
+		thisGame.addPlayer(new Player("Kris",false));
+		thisGame.dealHand(deck);
+		thisGame.dealHand(deck);
+		game.setPlayerName(thisGame.getPlayer().getName());
+
 		long start;
 		long elapsed;
 		long wait;
@@ -109,7 +116,7 @@ public class GameLogic {
 			}
 			
 			//logic for allowing player to split
-			if(true){
+			if(thisGame.getPlayer(1).canSplit()){
 				game.EnableSplit();	
 			}
 			else{
@@ -134,7 +141,8 @@ public class GameLogic {
 	
 	//not important
 	private static void update(){
-		countDown -= 1;
-		game.setChips(Integer.toString(countDown));
+		game.setPlayerCards(thisGame.getPlayer().getHand());
+		game.setDealerCards(thisGame.getDealer().getHand());
+		game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
 	}
 }

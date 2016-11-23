@@ -164,7 +164,7 @@ public class BlackJackGUI extends JFrame{
 	public void setPlayerName(String in){jlPlayerName.setText(in);}
 	public void setShuffleAmount(String in){jlShuffleAmount.setText(in);}
 	public void setPlayerCards(String in){jlPlayerCards.setText(in);}
-	public void setDealerCards(String in){jlPlayerCards.setText(in);}
+	public void setDealerCards(String in){jlDealerCards.setText(in);}
 	
 	public void setHasChips(boolean in){outOfChips = in;}
 	public void setOutOfRound(boolean in){outOfRound = in;}

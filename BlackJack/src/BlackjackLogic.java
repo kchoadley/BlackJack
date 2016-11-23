@@ -19,7 +19,7 @@ public class BlackjackLogic {
 	Player[] players;
 	private static int top;
 	private static int turn;
-	private int rounds;
+	private static int rounds;
 	private StringBuilder endResults;
 	private static Deck deck;
 	/**
@@ -28,7 +28,7 @@ public class BlackjackLogic {
 	public BlackjackLogic(){
 		top = 0;
 		this.players = new Player[2];
-		this.rounds = 1;
+		rounds = 1;
 		turn = -1;
 		this.endResults = new StringBuilder("This is the end results\n");
 		deck = Deck.getInstance();
@@ -41,7 +41,7 @@ public class BlackjackLogic {
 	public BlackjackLogic(int players){
 		top = 0;
 		this.players = new Player[players];
-		this.rounds = 1;
+		rounds = 1;
 		turn = -1;
 		this.endResults = new StringBuilder("This is the end results\n");
 		deck = Deck.getInstance();
@@ -100,21 +100,61 @@ public class BlackjackLogic {
 		}
 	}
 	/**
+	 * Run at the end of a round before resetting the hands of all players.
+	 * Will check each player hand against the dealer and pay out accordingly.
+	 */
+	public void payTheWinners(){
+		if(getDealer().hasBlackjack()){
+			for(int i = 1; i<getPlayers();i++){
+				if(getPlayer(i).hasBlackjack())
+					getPlayer(i).addChips(getPlayer(i).getBet());
+			}
+			// Start next round.
+			return;
+		}
+		for(int i = top-1; i >0;i--){
+			if(players[i].getHandValue()<=21){
+				//player wins
+				if(players[i].hasBlackjack())
+					players[i].addChips((int)(getPlayer(i).getBet()*2.5));
+				else if(getPlayer(i).getHandValue() > getDealer().getHandValue() || getDealer().getHandValue()>21)
+					getPlayer(i).addChips(getPlayer(i).getBet()*2);
+				//push
+				else if(getPlayer(i).getHandValue() == getDealer().getHandValue())
+					getPlayer(i).addChips(getPlayer(i).getBet());
+			}
+			if(getPlayer(i).getSplitHandValue()<=21 && getPlayer(i).hasSplitHand()){
+				//player wins
+				if(getPlayer(i).hasSplitHandBlackjack())
+					getPlayer(i).addChips((int)(getPlayer(i).getBet()*2.5));
+				else if(getPlayer(i).getSplitHandValue() > getDealer().getHandValue() || getDealer().getHandValue()>21)
+					getPlayer(i).addChips(getPlayer(i).getBet()*2);
+				//push
+				else if(getPlayer(i).getSplitHandValue() == getDealer().getHandValue())
+					getPlayer(i).addChips(getPlayer(i).getBet());
+			}
+		}
+	}
+	/**
 	 * Has each player discard their current hand.
 	 */
 	public void discardHands(){
 		for(int i = 0; i < top; i ++){
 			players[i].discardHand();
 		}
-		this.incrementRounds();
 	}
 	public static void endTurn(){
 		if(turn == 0){
 			turn = top-1;
+			rounds++;
 		}
 		else
 			turn--;
 	}
+	/**
+	 * Returns the player whose turn it is.
+	 * @return
+	 */
 	public Player getTurn(){
 		return this.getPlayer(turn);
 	}
@@ -124,12 +164,6 @@ public class BlackjackLogic {
 	 */
 	public int getRounds(){
 		return this.rounds;
-	}
-	/**
-	 * Increases hands by 1.
-	 */
-	public void incrementRounds(){
-		this.rounds++;
 	}
 	/**
 	 * Builds a String representation of each player's hand.

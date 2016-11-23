@@ -198,8 +198,8 @@ public class Player {
 		return false;
 	}
 	/**
-	 * Return true if the current hand is Blackjack.
-	 * @return true if the current hand is Blackjack
+	 * Return true if the current split hand is Blackjack.
+	 * @return true if the current split hand is Blackjack
 	 */
 	public boolean hasSplitHandBlackjack(){
 		if(splitTop==2){
@@ -222,12 +222,16 @@ public class Player {
 			aces = true;
 		}
 	}
+	/**
+	 * Returns true if this player has a split hand
+	 * @return true if this  player has a split hand
+	 */
 	public boolean hasSplitHand(){
 		return this.hasSplitHand;
 	}
 	/**
-	 * Passes a card to the player that is stored in the Card array at position top.
-	 * @param card added to player Card array
+	 * Passes a card to this player that is stored in the split hand Card array at position splitTop.
+	 * @param card added to player split hand Card array
 	 */
 	public void receiveSplitHandCard(Card card){
 		splitHand[splitTop++] = card;
@@ -243,7 +247,7 @@ public class Player {
 	public String getHand(){
 		StringBuilder s = new StringBuilder("");
 		for(int i = 0; i < top; i++){
-			if(this.name.equals("Dealer")&&i==1&&firstHandShowing){
+			if(this.name.equals(DEALER)&& i==1 &&firstHandShowing){
 				s.append("?? ");
 				firstHandShowing = false;
 			}

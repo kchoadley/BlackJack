@@ -17,24 +17,27 @@
 public class BlackjackLogic {
 	// Initialize class variables.
 	Player[] players;
-	int top;
-	int rounds;
+	private int top;
+	private int rounds;
+	private StringBuilder endResults;
 	/**
 	 * Default constructor contains 2 players.
 	 */
 	private BlackjackLogic(){
-		top = 0;
-		players = new Player[2];
-		rounds = 1;
+		this.top = 0;
+		this.players = new Player[2];
+		this.rounds = 1;
+		this.endResults = new StringBuilder("This is the end results\n");
 	}
 	/**
 	 * Constructor has input for number of players.
 	 * @param i number of players
 	 */
 	private BlackjackLogic(int i){
-		top = 0;
-		players = new Player[i];
-		rounds = 1;
+		this.top = 0;
+		this.players = new Player[i];
+		this.rounds = 1;
+		this.endResults = new StringBuilder("This is the end results\n");
 	}
 	/**
 	 * Adds a player to the game.
@@ -101,26 +104,30 @@ public class BlackjackLogic {
 		for(int i = 0; i < top; i ++){
 			if(players[i].getName().equals("Dealer"))
 				s.append(players[i].getName() +"\t"+ players[i].getHand() +"\tHand Value:"+ players[i].getHandValue() +"\t"+"\n");
-			else
-				s.append(players[i].getName() +"\t"+ players[i].getHand() +"\tHand Value:"+ players[i].getHandValue() +"\tChips:"+ players[i].getChips()+"\n");
+			else{
+				s.append(players[i].getName() +"\t"+ players[i].getHand() +"\tHand Value:"+ players[i].getHandValue());
+				if(players[1].hasSplitHand())
+					s.append("\tSplit Hand Value:"+ players[i].getSplitHandValue());
+				s.append("\tChips:"+ players[i].getChips()+"\n");
+			}
 		}
 		return s.toString();
+	}
+	public String toString(){
+		return this.endResults.toString();
 	}
 	/**
 	 * Removes any players that do not have enough chips to place their bet.
 	 */
 	public void removeDeadPlayers(){
-		int player = top-1;
-		while(player>0){
+		for(int player = top-1; player>0; player--){
 			if(players[player].getChips()-players[player].getBet() < 0){
-				if(player < top-1){
-					for(int i=player; i < top-1; i++){
-						players[i] = players[i+1];
-					}
-				}
+				endResults.append(players[player].toString() + "\n");
 				top--;
+				for(int i=player; i < top; i++){
+					players[i] = players[i+1];
+				}
 			}
-			player--;
 		}
 	}
 	/**
@@ -187,8 +194,14 @@ public class BlackjackLogic {
 				if(thisGame.getPlayer(i).getHandValue()<21){
 					// NPC logic.
 					if(thisGame.getPlayer(i).isNPC())
+						if(thisGame.getPlayer(i).canSplit())
+							thisGame.getPlayer(i).splitHand();
 						while(thisGame.getPlayer(i).getHandValue()<17){
 							thisGame.getPlayer(i).receiveCard(deck.dealCard());
+							deckMinimum = deckMinimum>deck.cardsLeft() ? deck.cardsLeft() : deckMinimum;
+						}
+						while(thisGame.getPlayer(i).getSplitHandValue()<17 && thisGame.getPlayer(i).hasSplitHand()){
+							thisGame.getPlayer(i).receiveSplitHandCard(deck.dealCard());
 							deckMinimum = deckMinimum>deck.cardsLeft() ? deck.cardsLeft() : deckMinimum;
 						}
 					// First check if can split, implement split logic.
@@ -209,6 +222,16 @@ public class BlackjackLogic {
 					else if(thisGame.getPlayer(i).getHandValue() == thisGame.getPlayer(0).getHandValue())
 						thisGame.getPlayer(i).addChips(thisGame.getPlayer(i).getBet());
 				}
+				if(thisGame.getPlayer(i).getSplitHandValue()<=21 && thisGame.getPlayer(i).hasSplitHand()){
+					//player wins
+					if(thisGame.getPlayer(i).hasSplitHandBlackjack())
+						thisGame.getPlayer(i).addChips((int)(thisGame.getPlayer(i).getBet()*2.5));
+					else if(thisGame.getPlayer(i).getSplitHandValue() > thisGame.getPlayer(0).getHandValue() || thisGame.getPlayer(0).getHandValue()>21)
+						thisGame.getPlayer(i).addChips(thisGame.getPlayer(i).getBet()*2);
+					//push
+					else if(thisGame.getPlayer(i).getSplitHandValue() == thisGame.getPlayer(0).getHandValue())
+						thisGame.getPlayer(i).addChips(thisGame.getPlayer(i).getBet());
+				}
 			}
 			// After everyone plays their hand, prints the hands.
 			System.out.println(thisGame.allHandstoString());
@@ -216,5 +239,6 @@ public class BlackjackLogic {
 			thisGame.removeDeadPlayers();			
 		}while(thisGame.someoneHasChips());
 		System.out.println("Deck minimum cards at any point: " + deckMinimum);
+		System.out.println(thisGame.toString());
 	}
 }

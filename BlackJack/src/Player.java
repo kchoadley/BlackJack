@@ -9,10 +9,16 @@ public class Player {
 	private static final String DEALER = "Dealer";
 	private String name;
 	private boolean aces;
+	private boolean splitHandAces;
+	private boolean hasSplitHand;
 	private Card[] hand;
+	private Card[] splitHand;
 	private int top;
+	private int splitTop;
 	private int chips;
 	private int bet;
+	private int maxChips;
+	private int roundsPlayed;
 	private static int players = 0;
 	private boolean npc;
 	private boolean firstHandShowing;
@@ -32,11 +38,17 @@ public class Player {
 			this.bet = 200;
 		}
 		players++;
-		hand = new Card[24];
-		top = 0;
-		aces = false;
+		this.hand = new Card[24];
+		this.splitHand = new Card[24];
+		this.top = 0;
+		this.splitTop = 0;
+		this.aces = false;
+		this.splitHandAces = false;
+		this.hasSplitHand = false;
 		this.npc=true;
 		this.firstHandShowing = true;
+		this.roundsPlayed = 0;
+		this.maxChips = this.chips;
 	}
 	/**
 	 * Creates a player. If it is the first player, it creates the dealer.
@@ -57,10 +69,17 @@ public class Player {
 			this.npc = npc;
 		}
 		players++;
-		hand = new Card[24];
-		top = 0;
-		aces = false;
+		this.hand = new Card[24];
+		this.splitHand = new Card[24];
+		this.top = 0;
+		this.splitTop = 0;
+		this.aces = false;
+		this.splitHandAces = false;
+		this.hasSplitHand = false;
+		this.npc=true;
 		this.firstHandShowing = true;
+		this.roundsPlayed = 0;
+		this.maxChips = this.chips;
 	}
 	/**
 	 * Creates a player. If it is the first player, it creates the dealer.
@@ -81,10 +100,17 @@ public class Player {
 			this.npc = npc;
 		}
 		players++;
-		hand = new Card[24];
-		top = 0;
-		aces = false;
+		this.hand = new Card[24];
+		this.splitHand = new Card[24];
+		this.top = 0;
+		this.splitTop = 0;
+		this.aces = false;
+		this.splitHandAces = false;
+		this.hasSplitHand = false;
+		this.npc=true;
 		this.firstHandShowing = true;
+		this.roundsPlayed = 0;
+		this.maxChips = this.chips;
 	}
 	/**
 	 * Return name of player.
@@ -113,6 +139,8 @@ public class Player {
 	 */
 	public void addChips(int chips){
 		this.chips += chips;
+		if(this.chips > this.maxChips)
+			this.maxChips = this.chips;
 	}
 	/**
 	 * Changes the amount bet by player.
@@ -140,9 +168,19 @@ public class Player {
 	 * @return true if the current hand can be split
 	 */
 	public boolean canSplit(){
-		if(top==2 && hand[0].face == hand[1].face)
+		//Must have only two cards, faces must match, and have enough chips to split.
+		if(top==2 && hand[0].face == hand[1].face && this.chips-this.getBet()>=0 && this.name != DEALER)
 			return true;
 		return false;
+	}
+	public void splitHand(){
+		this.hasSplitHand = true;
+		this.receiveSplitHandCard(this.hand[--top]);
+		this.splitHandAces = this.aces;
+		this.removeChips(this.getBet());
+		// Having a Singleton deck class just came in handy.
+		this.receiveCard(Deck.getInstance().dealCard());
+		this.receiveSplitHandCard(Deck.getInstance().dealCard());
 	}
 	/**
 	 * Return true if the current hand is Blackjack.
@@ -160,6 +198,21 @@ public class Player {
 		return false;
 	}
 	/**
+	 * Return true if the current hand is Blackjack.
+	 * @return true if the current hand is Blackjack
+	 */
+	public boolean hasSplitHandBlackjack(){
+		if(splitTop==2){
+			if(splitHand[0].face == Card.Face.ACE && splitHand[1].getValue()==10){
+				return true;
+			}
+			if(splitHand[1].face == Card.Face.ACE && splitHand[0].getValue()==10){
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
 	 * Passes a card to the player that is stored in the Card array at position top.
 	 * @param card added to player Card array
 	 */
@@ -167,6 +220,19 @@ public class Player {
 		hand[top++] = card;
 		if(card.face == Card.Face.ACE){
 			aces = true;
+		}
+	}
+	public boolean hasSplitHand(){
+		return this.hasSplitHand;
+	}
+	/**
+	 * Passes a card to the player that is stored in the Card array at position top.
+	 * @param card added to player Card array
+	 */
+	public void receiveSplitHandCard(Card card){
+		splitHand[splitTop++] = card;
+		if(card.face == Card.Face.ACE){
+			splitHandAces = true;
 		}
 	}
 	/**
@@ -183,6 +249,12 @@ public class Player {
 			}
 			else
 				s.append(hand[i].toString() + " ");
+		}
+		if(this.hasSplitHand){
+			s.append(" || ");
+			for(int i = 0; i < splitTop;i++){
+				s.append(splitHand[i].toString() + " ");
+			}
 		}
 		return s.toString();
 	}
@@ -202,11 +274,36 @@ public class Player {
 		return i;
 	}
 	/**
+	 * Returns the current value of this player's hand.
+	 * If there are any Aces in the hand, it will return the highest value under 22.
+	 * @return
+	 */
+	public int getSplitHandValue(){
+		int i = 0;
+		for(int j = 0; j < splitTop; j++){
+			i += splitHand[j].getValue();
+		}
+		if(splitHandAces && i + 10 <= 21){
+			i += 10;
+		}
+		return i;
+	}
+	/**
 	 * Resets this players hand so they have no cards.
 	 */
 	public void discardHand(){
-		top = 0;
-		aces = false;
-		firstHandShowing = true;
+		this.top = 0;
+		this.splitTop = 0;
+		this.aces = false;
+		this.splitHandAces = false;
+		this.firstHandShowing = true;
+		this.hasSplitHand = false;
+		this.roundsPlayed++;
+	}
+	public String toString(){
+		StringBuilder s = new StringBuilder("");
+		s.append("Name: " + this.name + " Max Chips: " + this.maxChips + " Rounds Played: " + this.roundsPlayed);
+		return s.toString();
+		
 	}
 }

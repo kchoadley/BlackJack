@@ -173,6 +173,11 @@ public class Player {
 			return true;
 		return false;
 	}
+	/**
+	 * Splits this player's hand into two. The second card in the hand is put as the first card in the split hand.
+	 * Two cards are dealt from the deck, one to the hand and one to the split hand.
+	 * Should only be called after an if(player.canSplit())
+	 */
 	public void splitHand(){
 		this.hasSplitHand = true;
 		this.receiveSplitHandCard(this.hand[--top]);
@@ -199,6 +204,7 @@ public class Player {
 	}
 	/**
 	 * Return true if the current split hand is Blackjack.
+	 * Should only be called after an if(player.hasSplitHAnd())
 	 * @return true if the current split hand is Blackjack
 	 */
 	public boolean hasSplitHandBlackjack(){
@@ -231,6 +237,7 @@ public class Player {
 	}
 	/**
 	 * Passes a card to this player that is stored in the split hand Card array at position splitTop.
+	 * Should only be called after an if(player.hasSplitHAnd())
 	 * @param card added to player split hand Card array
 	 */
 	public void receiveSplitHandCard(Card card){
@@ -278,8 +285,9 @@ public class Player {
 		return i;
 	}
 	/**
-	 * Returns the current value of this player's hand.
+	 * Returns the current value of this player's split hand.
 	 * If there are any Aces in the hand, it will return the highest value under 22.
+	 * Should only be called after an if(player.hasSplitHAnd())
 	 * @return
 	 */
 	public int getSplitHandValue(){

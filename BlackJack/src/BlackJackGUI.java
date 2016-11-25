@@ -20,15 +20,14 @@ public class BlackJackGUI extends JFrame{
 	private boolean wantsIncrease;
 	private boolean wantsDecrease;
 	private boolean wantsDeal;
+	private boolean firstHand;
 	
-	private int wantedBetAmount;
-	private boolean updateBet;
 	
 	private boolean outOfRound;
 	private boolean outOfChips;
 	private boolean hideDouble;
 	
-	private boolean playAgain;
+	private boolean newGame;
 	
 	
 	
@@ -69,7 +68,7 @@ public class BlackJackGUI extends JFrame{
 		private JButton jbtIncreaseBet = new JButton("Increase Bet");
 		private JButton jbtDecreaseBet = new JButton("Decrease Bet");
 		private JButton jbtDeal = new JButton("Deal");
-		private JButton jbtPlayAgain = new JButton("Play Again");
+		private JButton jbtNewGame = new JButton("New Game");
 		
 	private JPanel jpEmpty = new JPanel();	
 	private JPanel jpBottom = new JPanel();
@@ -77,6 +76,14 @@ public class BlackJackGUI extends JFrame{
 	private JLabel jlInfo = new JLabel("Hello");
 	
 	public BlackJackGUI(){
+		DisableHit();
+		DisableStay();
+		DisableDouble();
+		DisableSplit();
+		DisableDecrease();
+		DisableIncrease();
+		DisablePlayer();
+		DisableDeal();
 	
 		
 		gbc.insets = new Insets(15,15,15,15);
@@ -135,7 +142,7 @@ public class BlackJackGUI extends JFrame{
 		gbc.gridy = 2;
 		jpButtons.add(jbtDeal,gbc);
 		gbc.gridy = 2;
-		jpButtons.add(jbtPlayAgain,gbc);
+		jpButtons.add(jbtNewGame,gbc);
 		
 		gbc.gridy = 0;
 		mainPanel.add(jpDealer,gbc);
@@ -200,15 +207,16 @@ public class BlackJackGUI extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				wantsDeal = true;
+				firstHand = true;
 			}
 		});
 		
-		jbtPlayAgain.addActionListener(new ActionListener() {
+		jbtNewGame.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				playAgain = true;
+				newGame = true;
 			}
 		});
 	}
@@ -219,6 +227,7 @@ public class BlackJackGUI extends JFrame{
 	public void setShuffleAmount(String in){jlShuffleAmount.setText(in);}
 	public void setPlayerCards(String in){jlPlayerCards.setText(in);}
 	public void setDealerCards(String in){jlDealerCards.setText(in);}
+	public void setFirstHand(Boolean b){firstHand = b;}
 	
 	public void setHasChips(boolean in){outOfChips = in;}
 	public void setOutOfRound(boolean in){outOfRound = in;}
@@ -230,7 +239,7 @@ public class BlackJackGUI extends JFrame{
 	public void resetIncrease(){wantsIncrease = false;}
 	public void resetDecrease(){wantsDecrease = false;}
 	public void resetDeal(){wantsDeal = false;}
-	public void resetPlayAgain(){playAgain = false;}
+	public void resetNewGame(){newGame = false;}
 	
 	public void DisableHit(){jbtHit.setEnabled(false);}
 	public void DisableStay(){jbtStay.setEnabled(false);}
@@ -239,6 +248,8 @@ public class BlackJackGUI extends JFrame{
 	public void DisableDecrease(){jbtDecreaseBet.setEnabled(false);}
 	public void DisableIncrease(){jbtIncreaseBet.setEnabled(false);}
 	public void DisablePlayer(){jbtHit.setEnabled(false); jbtStay.setEnabled(false);}
+	public void DisableDeal(){jbtDeal.setEnabled(false);}
+	public void DisableNewGame(){jbtNewGame.setEnabled(false);}
 	
 	public void EnableHit(){jbtHit.setEnabled(true);}
 	public void EnableStay(){jbtStay.setEnabled(true);}
@@ -246,6 +257,8 @@ public class BlackJackGUI extends JFrame{
 	public void EnableSplit(){jbtSplit.setEnabled(true);}
 	public void EnableDecrease(){jbtDecreaseBet.setEnabled(true);}
 	public void EnableIncrease(){jbtIncreaseBet.setEnabled(true);}
+	public void EnableDeal(){jbtDeal.setEnabled(true);}
+	public void EnablePlayAgain(){jbtNewGame.setEnabled(true);}
 	
 	public void EnablePlayer(){jbtHit.setEnabled(true); jbtStay.setEnabled(true);}
 	
@@ -257,7 +270,8 @@ public class BlackJackGUI extends JFrame{
 	public boolean getIncrease(){return wantsIncrease;}
 	public boolean getDecrease(){return wantsDecrease;}
 	public boolean getDeal(){return wantsDeal;}
-	public boolean getPlayAgain(){return playAgain;}
+	public boolean getPlayAgain(){return newGame;}
+	public boolean getFirstHand(){return firstHand;}
 	
 }
 

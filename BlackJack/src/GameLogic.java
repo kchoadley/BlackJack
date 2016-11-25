@@ -1,4 +1,11 @@
-
+/**
+ * Things to add:
+ * 		-Field for entering user new at new game screen.
+ * 		-JLabel at bottom of screen for dialog out to player
+ * 		-Split hand input
+ * @author Kristofer
+ *
+ */
 public class GameLogic {
 	private static Thread thread;
 	private static boolean running;
@@ -7,6 +14,7 @@ public class GameLogic {
 	private static BlackJackGUI game;
 	private static BlackjackLogic thisGame;
 	private static Deck deck = Deck.getInstance();
+	private static int betIncrement;
 	
 	public static int countDown = 1000;
 
@@ -15,39 +23,23 @@ public class GameLogic {
 		game = new BlackJackGUI();
 		game.setSize(400,600);
 		running = true;
+		betIncrement = 200;
+		thisGame.addPlayer(new Player());
+		thisGame.addPlayer(new Player());
+		game.setPlayerName(thisGame.getPlayer().getName());
+		game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+		game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
 		run();
 		
 	}
 	public static void run(){
-		thisGame.addPlayer(new Player());
-		thisGame.addPlayer(new Player());
-		thisGame.dealHand(deck);
-		thisGame.dealHand(deck);
-		game.setPlayerName(thisGame.getPlayer().getName());
+		
 
 		long start;
 		long elapsed;
 		long wait;
 		
 		while(running){
-			if(thisGame.getTurn().isNPC()){
-				if(thisGame.getTurn().getHandValue()<21){
-					// NPC logic.
-					if(thisGame.getTurn().isNPC())
-						if(thisGame.getTurn().canSplit()&& thisGame.getTurn() != thisGame.getDealer())
-							thisGame.getTurn().splitHand();
-						while(thisGame.getTurn().getHandValue()<17){
-							thisGame.getTurn().receiveCard(deck.dealCard());
-						}
-						while(thisGame.getTurn().getSplitHandValue()<17 && thisGame.getTurn().hasSplitHand()){
-							thisGame.getTurn().receiveSplitHandCard(deck.dealCard());
-						}
-						BlackjackLogic.endTurn();
-					// First check if can split, implement split logic.
-					// Check if can double down, implement double down logic.
-					// This is where the interaction with the GUI hit / stay should go.
-				}
-			}
 			start = System.nanoTime();
 			elapsed = System.nanoTime() - start;
 			wait = (targetTime  - elapsed / 1000000 < 0 ? 5 : targetTime - elapsed / 1000000)*60;	//every second
@@ -56,124 +48,171 @@ public class GameLogic {
 				e.printStackTrace();
 			}
 			
-			if (game.getDeal() == false) {
+			//// NPC logic
+			if(thisGame.getTurn().isNPC()){
+				if(thisGame.getTurn().getHandValue()<21){
+					if(thisGame.getTurn().canSplit() && thisGame.getTurn() != thisGame.getDealer())
+						thisGame.getTurn().splitHand();
+					while(thisGame.getTurn().getHandValue()<17)
+						thisGame.getTurn().receiveCard(deck.dealCard());
+					while(thisGame.getTurn().getSplitHandValue()<17 && thisGame.getTurn().hasSplitHand())
+						thisGame.getTurn().receiveSplitHandCard(deck.dealCard());
+				}
+				if(thisGame.getTurn()==thisGame.getDealer()){
+					game.setDealerCards(thisGame.getDealer().getHand());
+					game.EnableDeal();
+					game.resetDeal();
+					game.getDeal();
+					thisGame.payTheWinners();
+					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+					if(!thisGame.someoneHasChips())
+						game.resetNewGame();
+				}
+				BlackjackLogic.endTurn();
+			}
+			if(game.getPlayAgain()== false){
+				game.EnablePlayAgain();
+			}
+			if (game.getDeal() == false && game.getPlayAgain()) {
 				//when player wants to increase bet
-				//doing 100 for now, we can make custom in a later version
-				
+				//doing betIncrement at 100 for now, we can make custom in a later version
+				game.DisableNewGame();
+				game.setFirstHand(true);
 				game.DisableHit();
 				game.DisableStay();
 				game.DisableSplit();
 				game.DisableDouble();
+				game.EnableDeal();
 				
-				game.EnableDecrease();
-				game.EnableIncrease();
-				
-				update();
+				// enable or disable buttons for increasing and decreasing bet.
+				if(thisGame.getPlayer().getChips()-thisGame.getPlayer().getBet()>=betIncrement)
+					game.EnableIncrease();
+				else
+					game.DisableIncrease();
+				if(thisGame.getPlayer().getBet()-betIncrement>0)
+					game.EnableDecrease();
+				else
+					game.DisableDecrease();
 				
 				if(game.getIncrease()){
-					thisGame.getTurn().increaseBet(100);
+					thisGame.getPlayer().increaseBet(betIncrement);
+					game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
 					game.resetIncrease();
 				}
 				
 				//when player wants to decrease bet
 				if(game.getDecrease()){
-					thisGame.getTurn().decreaseBet(100);
+					thisGame.getPlayer().decreaseBet(betIncrement);
+					game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
 					game.resetDecrease();
 				}
 			}
 			else {
-				game.DisableDecrease();
-				game.DisableIncrease();
-				game.EnableHit();
-				game.EnableStay();
-				game.EnableSplit();
-				game.EnableDouble();
-				
-				game.setPlayerCards(thisGame.getPlayer().getHand());
+				// Runs only once right after "deal" is pressed.
+				if(game.getFirstHand()){
+					game.DisableDeal();
+					game.DisableDecrease();
+					game.DisableIncrease();
+					game.EnableHit();
+					game.EnableStay();
+					game.EnableSplit();
+					game.EnableDouble();
+					game.resetHit();
+					game.resetDouble();
+					game.resetDecrease();
+					game.resetIncrease();
+					game.resetStay();
+					if(thisGame.getRounds()%5==0){
+						deck.shuffle();
+					}
+					game.setShuffleAmount(Integer.toString(5-thisGame.getRounds()%5));
+					
+					
+					thisGame.removeDeadPlayers();
+					thisGame.discardHands();
+					if(!thisGame.someoneHasChips()){
+						game.EnablePlayAgain();
+						game.DisableDeal();
+						game.DisableHit();
+						game.DisableStay();
+						game.DisableSplit();
+						game.DisableDecrease();
+						game.DisableIncrease();
+						game.DisableDouble();
+						thisGame = new BlackjackLogic();
+						thisGame.addPlayer(new Player());
+						thisGame.addPlayer(new Player());
+						game.setPlayerName(thisGame.getPlayer().getName());
+						game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+						game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
+					}
+					else{
+						game.DisableNewGame();
+					}
+					
+					thisGame.dealHand(deck);
+					thisGame.dealHand(deck);
+					game.setPlayerCards(thisGame.getPlayer().getHand());
+					game.setDealerCards(thisGame.getDealer().getHand());
+					thisGame.getPlayer().removeChips(thisGame.getPlayer().getBet());
+					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+					game.setFirstHand(false);
+					if(thisGame.getPlayer().hasBlackjack())
+						thisGame.getPlayer().setStay();
+				}
 				
 				//logic for allowing player to split
-				if(thisGame.getPlayer(1).canSplit()){
+				if(thisGame.getPlayer().canSplit()){
 					game.EnableSplit();	
 				}
 				else{
 					game.DisableSplit();
 				}
+				if(game.getSplit()){
+					thisGame.getPlayer().splitHand();
+					game.setPlayerCards(thisGame.getPlayer().getHand());
+					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+				}
 				
 				//logic for allowing player to double
-				if(thisGame.getPlayer(1).canDouble()){
+				if(thisGame.getPlayer().canDouble()){
 					game.EnableDouble();	
 				}
 				else{
 					game.DisableDouble();
 				}
+				//when player has doubled
+				if(game.getDouble()){
+					thisGame.getPlayer().removeChips(thisGame.getPlayer().getBet());
+					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+					game.DisableDouble();
+					thisGame.getPlayer().receiveCard(deck.dealCard());
+					game.setPlayerCards(thisGame.getPlayer().getHand());
+					thisGame.getPlayer().setStay();
+				}
 				
 				//When player has hit
 				if(game.getHit()){
-					thisGame.getTurn().receiveCard(deck.dealCard());
-					if(thisGame.getTurn().getHandValue()>21){
-						BlackjackLogic.endTurn();
-						thisGame.getPlayer(1).setStay();
+					thisGame.getPlayer().receiveCard(deck.dealCard());
+					game.setPlayerCards(thisGame.getPlayer().getHand());
+					if(thisGame.getPlayer().getHandValue()>21){
+						thisGame.getPlayer().setStay();
 					}
 					game.resetHit();
 				}
-				else{
-					
-				}
 				//when player has stayed
 				//disable all buttons, set dealer's cards
-				if(game.getStay() || thisGame.getPlayer(1).getHasStayed()){
+				if(game.getStay()){
+					thisGame.getPlayer().setStay();
+				}
+				if(thisGame.getPlayer().getHasStayed()){
 					BlackjackLogic.endTurn();
 					game.resetStay();
 					game.DisablePlayer();
 					game.DisableDouble();
-					game.setDealerCards(thisGame.getDealer().getHand());
-					thisGame.getPlayer(1).setStay();
-				}
-				else{
-					
-				}
-				//when player has split
-				if(game.getSplit()){
-					thisGame.getTurn().increaseBet(100);
-					game.resetHit();
-				}
-				else{
-					
-				}
-				//when player has doubled
-				if(game.getDouble()){
-					thisGame.getTurn().receiveCard(deck.dealCard());
-					game.resetDouble();
-					thisGame.getTurn().increaseBet(thisGame.getTurn().getBet());
-					thisGame.getPlayer(1).setStay();
-					BlackjackLogic.endTurn();
-				}
-				else{
-					
-				}
-				
-				//if player has 'stayed' or ended their turn, then deal the dealer's cards
-				if (thisGame.getPlayer(1).getHasStayed()){
-					game.setDealerCards(thisGame.getDealer().getHand());
-				}
-				
-//				if (game.getPlayAgain() == true){
-//					game.resetPlayAgain();
-//					game.resetDeal();
-//					BlackjackLogic.endTurn();
-//					thisGame.discardHands();
-//					game.setPlayerCards("");
-//					game.setDealerCards("");
-//					thisGame.getPlayer(1).resetStay();
-//				}
-				
+					thisGame.getPlayer().resetStay();				
+					}				
 			}	
 		}
-	}
-	
-	//initialize game table
-	private static void update(){
-		game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
-		game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
 	}
 }

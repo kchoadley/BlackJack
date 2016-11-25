@@ -1,13 +1,18 @@
 /**
  * Things to add:
- * 		-Field for entering user new at new game screen.
- * 		-JLabel at bottom of screen for dialog out to player
- * 		-Split hand input
- * @author Kristofer
+ * 		- Field for entering user name at new game screen.
+ * 		- JLabel at bottom of screen for dialog out to player
+ * 		- Split hand input (not functional at moment)
+ * 		- Test reseting the game after game over.
+ * 		- 
+ * 
+ * @author Kailab Bowler
+ * @author Kristofer Hoadley
+ * @author Connor Premuda
+ * @author Edward Woelke
  *
  */
 public class GameLogic {
-	private static Thread thread;
 	private static boolean running;
 	private static int FPS = 60;
 	private static long targetTime = 1000/FPS;
@@ -33,43 +38,17 @@ public class GameLogic {
 		
 	}
 	public static void run(){
-		
-
 		long start;
 		long elapsed;
 		long wait;
-		
 		while(running){
 			start = System.nanoTime();
 			elapsed = System.nanoTime() - start;
 			wait = (targetTime  - elapsed / 1000000 < 0 ? 5 : targetTime - elapsed / 1000000)*60;	//every second
 			try{Thread.sleep(wait);}
 			catch(Exception e){
-				e.printStackTrace();
-			}
+				e.printStackTrace();}
 			
-			//// NPC logic
-			if(thisGame.getTurn().isNPC()){
-				if(thisGame.getTurn().getHandValue()<21){
-					if(thisGame.getTurn().canSplit() && thisGame.getTurn() != thisGame.getDealer())
-						thisGame.getTurn().splitHand();
-					while(thisGame.getTurn().getHandValue()<17)
-						thisGame.getTurn().receiveCard(deck.dealCard());
-					while(thisGame.getTurn().getSplitHandValue()<17 && thisGame.getTurn().hasSplitHand())
-						thisGame.getTurn().receiveSplitHandCard(deck.dealCard());
-				}
-				if(thisGame.getTurn()==thisGame.getDealer()){
-					game.setDealerCards(thisGame.getDealer().getHand());
-					game.EnableDeal();
-					game.resetDeal();
-					game.getDeal();
-					thisGame.payTheWinners();
-					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
-					if(!thisGame.someoneHasChips())
-						game.resetNewGame();
-				}
-				BlackjackLogic.endTurn();
-			}
 			if(game.getPlayAgain()== false){
 				game.EnablePlayAgain();
 			}
@@ -195,6 +174,7 @@ public class GameLogic {
 				if(game.getHit()){
 					thisGame.getPlayer().receiveCard(deck.dealCard());
 					game.setPlayerCards(thisGame.getPlayer().getHand());
+					game.DisableDouble();
 					if(thisGame.getPlayer().getHandValue()>21){
 						thisGame.getPlayer().setStay();
 					}
@@ -206,12 +186,28 @@ public class GameLogic {
 					thisGame.getPlayer().setStay();
 				}
 				if(thisGame.getPlayer().getHasStayed()){
-					BlackjackLogic.endTurn();
 					game.resetStay();
 					game.DisablePlayer();
 					game.DisableDouble();
-					thisGame.getPlayer().resetStay();				
-					}				
+					thisGame.getPlayer().resetStay();	
+					BlackjackLogic.endTurn();			
+					}
+
+				//// NPC logic
+				if(thisGame.getTurn().isNPC()){
+					thisGame.npcTurn();
+					if(thisGame.getTurn()==thisGame.getDealer()){
+						game.setDealerCards(thisGame.getDealer().getHand());
+						game.EnableDeal();
+						game.resetDeal();
+						game.getDeal();
+						thisGame.payTheWinners();
+						game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+						if(!thisGame.someoneHasChips())
+							game.resetNewGame();
+					}
+					BlackjackLogic.endTurn();
+				}
 			}	
 		}
 	}

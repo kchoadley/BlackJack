@@ -2,16 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-
+/**
+ * This is the GUI for the Blackjack game.
+ * 
+ * @author Kailab Bowler
+ * @author Kristofer Hoadley
+ * @author Connor Premuda
+ * @author Edward Woelke
+ *
+ */
 public class BlackJackGUI extends JFrame{
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	
-	
-	
 	
 	private boolean hasHit;
 	private boolean hasStayed;
@@ -21,24 +22,14 @@ public class BlackJackGUI extends JFrame{
 	private boolean wantsDecrease;
 	private boolean wantsDeal;
 	private boolean firstHand;
-	
-	
-	private boolean outOfRound;
-	private boolean outOfChips;
-	private boolean hideDouble;
-	
 	private boolean newGame;
-	
-	
 	
 	private GridBagConstraints gbcDealer = new GridBagConstraints();
 	private GridBagConstraints gbcPlayer = new GridBagConstraints();
 	private GridBagConstraints gbc = new GridBagConstraints();
-	
-	
 	private JFrame canvas = new JFrame();
-	
 	private JPanel mainPanel = new JPanel(new GridBagLayout());
+	
 	
 	private JPanel jpDealer = new JPanel(new GridBagLayout());
 		private JPanel jpDealerLeft = new JPanel(new GridBagLayout());
@@ -49,8 +40,6 @@ public class BlackJackGUI extends JFrame{
 			private JLabel jlShuffleAmount = new JLabel("Amount");
 			private JLabel jlChipsString = new JLabel("Chips");
 			private JLabel jlChipsCount = new JLabel("Count");
-	
-	
 	
 	private JPanel jpPlayer = new JPanel(new GridBagLayout());
 		private JPanel jpPlayerLeft = new JPanel(new GridBagLayout());
@@ -72,10 +61,10 @@ public class BlackJackGUI extends JFrame{
 		
 	private JPanel jpEmpty = new JPanel();	
 	private JPanel jpBottom = new JPanel();
-	private JButton jbtContinue = new JButton("Hello");
 	private JLabel jlInfo = new JLabel("Hello");
 	
 	public BlackJackGUI(){
+		// Initializes all buttons but newGame to disabled.
 		DisableHit();
 		DisableStay();
 		DisableDouble();
@@ -107,7 +96,6 @@ public class BlackJackGUI extends JFrame{
 		jpDealerRight.add(jlChipsCount,gbcDealer);
 		jpDealerRight.add(jlChipsString,gbcDealer);
 		
-		
 		jpDealer.add(jpDealerLeft);
 		jpDealer.add(jpEmpty);
 		jpDealer.add(jpDealerRight);
@@ -117,12 +105,10 @@ public class BlackJackGUI extends JFrame{
 		gbcPlayer.gridy = 1;
 		jpPlayerLeft.add(jlPlayerCards,gbcPlayer);
 		
-		
 		gbcPlayer.gridy = 0;
 		jpPlayerRight.add(jlBetAmount,gbcPlayer);
 		gbcPlayer.gridy = 0;
 		jpPlayerRight.add(jlBetString,gbcPlayer);
-		
 		
 		jpPlayer.add(jpPlayerLeft);
 		jpPlayer.add(jpPlayerRight);
@@ -143,7 +129,6 @@ public class BlackJackGUI extends JFrame{
 		jpButtons.add(jbtDeal,gbc);
 		gbc.gridy = 2;
 		jpButtons.add(jbtNewGame,gbc);
-		
 		gbc.gridy = 0;
 		mainPanel.add(jpDealer,gbc);
 		gbc.gridy = 1;
@@ -153,9 +138,9 @@ public class BlackJackGUI extends JFrame{
 		
 		mainPanel.setBackground(Color.GREEN);
 		
-		
 		canvas.add(mainPanel);
 		
+		// Listeners for the buttons
 		jbtHit.addActionListener(new ActionListener() {
 			
 			@Override
@@ -221,6 +206,7 @@ public class BlackJackGUI extends JFrame{
 		});
 	}
 	
+	// Set output text fields.
 	public void setChips(String in){jlChipsCount.setText(in);}
 	public void setBetAmount(String in){jlBetAmount.setText(in);}
 	public void setPlayerName(String in){jlPlayerName.setText(in);}
@@ -229,10 +215,7 @@ public class BlackJackGUI extends JFrame{
 	public void setDealerCards(String in){jlDealerCards.setText(in);}
 	public void setFirstHand(Boolean b){firstHand = b;}
 	
-	public void setHasChips(boolean in){outOfChips = in;}
-	public void setOutOfRound(boolean in){outOfRound = in;}
-	
-	
+	// Reset button values to false
 	public void resetHit(){hasHit = false;}
 	public void resetStay(){hasStayed = false;}
 	public void resetDouble(){wantsDouble = false;}
@@ -241,6 +224,7 @@ public class BlackJackGUI extends JFrame{
 	public void resetDeal(){wantsDeal = false;}
 	public void resetNewGame(){newGame = false;}
 	
+	// Disable buttons
 	public void DisableHit(){jbtHit.setEnabled(false);}
 	public void DisableStay(){jbtStay.setEnabled(false);}
 	public void DisableDouble(){jbtDouble.setEnabled(false);}
@@ -251,6 +235,7 @@ public class BlackJackGUI extends JFrame{
 	public void DisableDeal(){jbtDeal.setEnabled(false);}
 	public void DisableNewGame(){jbtNewGame.setEnabled(false);}
 	
+	
 	public void EnableHit(){jbtHit.setEnabled(true);}
 	public void EnableStay(){jbtStay.setEnabled(true);}
 	public void EnableDouble(){jbtDouble.setEnabled(true);}
@@ -259,7 +244,6 @@ public class BlackJackGUI extends JFrame{
 	public void EnableIncrease(){jbtIncreaseBet.setEnabled(true);}
 	public void EnableDeal(){jbtDeal.setEnabled(true);}
 	public void EnablePlayAgain(){jbtNewGame.setEnabled(true);}
-	
 	public void EnablePlayer(){jbtHit.setEnabled(true); jbtStay.setEnabled(true);}
 	
 	
@@ -272,31 +256,4 @@ public class BlackJackGUI extends JFrame{
 	public boolean getDeal(){return wantsDeal;}
 	public boolean getPlayAgain(){return newGame;}
 	public boolean getFirstHand(){return firstHand;}
-	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

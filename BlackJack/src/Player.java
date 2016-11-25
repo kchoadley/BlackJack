@@ -22,6 +22,7 @@ public class Player {
 	private static int players = 0;
 	private boolean npc;
 	private boolean firstHandShowing;
+	private boolean hasStayed;
 	/**
 	 * Default constructor. If it is creating the first player it creates the dealer.
 	 * Use for dealer creation.
@@ -128,6 +129,13 @@ public class Player {
 		return this.chips;
 	}
 	/**
+	 * Return if the player has stayed in the hand
+	 * @return hasStayed
+	 */
+	public Boolean getHasStayed(){
+		return this.hasStayed;
+	}
+	/**
 	 * Decreases player chips by chips entered.
 	 * @param chips removed from player
 	 */
@@ -149,6 +157,23 @@ public class Player {
 	 */
 	public void setBet(int bet){
 		this.bet = bet;
+	}
+	
+	/**
+	 * Sets values needed on stay of a hand by the player
+	 * @param
+	 */
+	public void setStay(){
+		this.hasStayed = true;
+		this.firstHandShowing = false;
+	}
+	/**
+	 * Sets values needed on stay of a hand by the player
+	 * @param
+	 */
+	public void resetStay(){
+		this.hasStayed = false;
+		this.firstHandShowing = false;
 	}
 	/**
 	 * Changes the amount bet by player.
@@ -191,6 +216,14 @@ public class Player {
 			return true;
 		return false;
 	}
+	
+	public boolean canDouble(){
+		//Must have two cards and enough to bet
+		if(top==2 && this.chips-this.getBet()>=0 && this.name != DEALER)
+			return true;
+		return false;
+	}
+	
 	/**
 	 * Splits this player's hand into two. The second card in the hand is put as the first card in the split hand.
 	 * Two cards are dealt from the deck, one to the hand and one to the split hand.

@@ -56,112 +56,123 @@ public class GameLogic {
 				e.printStackTrace();
 			}
 			
-			update();
-			
-			
-			
-			//When player has hit
-			if(game.getHit()){
-				thisGame.getTurn().receiveCard(deck.dealCard());
-				if(thisGame.getTurn().getHandValue()>21)
-					BlackjackLogic.endTurn();
-				game.resetHit();
-			}
-			else{
+			if (game.getDeal() == false) {
+				//when player wants to increase bet
+				//doing 100 for now, we can make custom in a later version
 				
-			}
-			//when player has stayed
-			if(game.getStay()){
-				BlackjackLogic.endTurn();
-				game.resetHit();
-			}
-			else{
-				
-			}
-			//when player has split
-			if(game.getIncrease()){
-				thisGame.getTurn().increaseBet(100);
-				game.resetHit();
-			}
-			else{
-				
-			}
-			//when player has doubled
-			if(game.getSplit()){
-				
-				game.resetHit();
-			}
-			else{
-				
-			}
-			//when player wants to increase bet
-			if(game.getSplit()){
-				
-				game.resetHit();
-			}
-			else{
-				
-			}
-			//when player wants to decrease bet
-			if(game.getSplit()){
-				
-				game.resetHit();
-			}
-			else{
-				
-			}
-			
-			
-			
-			
-			
-			
-			
-			//logic so player can't decrease bet once they have kept their bet
-			if(thisGame.getTurn().firstHandShowing() && thisGame.getTurn().getBet()>0){
-				game.EnableDecrease();
-			}
-			else{
-				game.DisableDecrease();
-			}
-			
-			
-			//logic so player can't increase bet passed their chip count
-			if(thisGame.getTurn().firstHandShowing() && thisGame.getTurn().getBet()<thisGame.getTurn().getChips()){
-				game.EnableIncrease();
-			}
-			else{
-				game.DisableIncrease();
-			}
-			
-			//logic for allowing player to split
-			if(thisGame.getPlayer(1).canSplit()){
-				game.EnableSplit();	
-			}
-			else{
+				game.DisableHit();
+				game.DisableStay();
 				game.DisableSplit();
-			}
-			
-			//logic for allowing player to double
-			if(true){
-				game.EnableDouble();	
-			}
-			else{
 				game.DisableDouble();
+				
+				game.EnableDecrease();
+				game.EnableIncrease();
+				
+				update();
+				
+				if(game.getIncrease()){
+					thisGame.getTurn().increaseBet(100);
+					game.resetIncrease();
+				}
+				
+				//when player wants to decrease bet
+				if(game.getDecrease()){
+					thisGame.getTurn().decreaseBet(100);
+					game.resetDecrease();
+				}
 			}
-			
-			
-			
-			
-			
-			
+			else {
+				game.DisableDecrease();
+				game.DisableIncrease();
+				game.EnableHit();
+				game.EnableStay();
+				game.EnableSplit();
+				game.EnableDouble();
+				
+				game.setPlayerCards(thisGame.getPlayer().getHand());
+				
+				//logic for allowing player to split
+				if(thisGame.getPlayer(1).canSplit()){
+					game.EnableSplit();	
+				}
+				else{
+					game.DisableSplit();
+				}
+				
+				//logic for allowing player to double
+				if(thisGame.getPlayer(1).canDouble()){
+					game.EnableDouble();	
+				}
+				else{
+					game.DisableDouble();
+				}
+				
+				//When player has hit
+				if(game.getHit()){
+					thisGame.getTurn().receiveCard(deck.dealCard());
+					if(thisGame.getTurn().getHandValue()>21){
+						BlackjackLogic.endTurn();
+						thisGame.getPlayer(1).setStay();
+					}
+					game.resetHit();
+				}
+				else{
+					
+				}
+				//when player has stayed
+				//disable all buttons, set dealer's cards
+				if(game.getStay() || thisGame.getPlayer(1).getHasStayed()){
+					BlackjackLogic.endTurn();
+					game.resetStay();
+					game.DisablePlayer();
+					game.DisableDouble();
+					game.setDealerCards(thisGame.getDealer().getHand());
+					thisGame.getPlayer(1).setStay();
+				}
+				else{
+					
+				}
+				//when player has split
+				if(game.getSplit()){
+					thisGame.getTurn().increaseBet(100);
+					game.resetHit();
+				}
+				else{
+					
+				}
+				//when player has doubled
+				if(game.getDouble()){
+					thisGame.getTurn().receiveCard(deck.dealCard());
+					game.resetDouble();
+					thisGame.getTurn().increaseBet(thisGame.getTurn().getBet());
+					thisGame.getPlayer(1).setStay();
+					BlackjackLogic.endTurn();
+				}
+				else{
+					
+				}
+				
+				//if player has 'stayed' or ended their turn, then deal the dealer's cards
+				if (thisGame.getPlayer(1).getHasStayed()){
+					game.setDealerCards(thisGame.getDealer().getHand());
+				}
+				
+//				if (game.getPlayAgain() == true){
+//					game.resetPlayAgain();
+//					game.resetDeal();
+//					BlackjackLogic.endTurn();
+//					thisGame.discardHands();
+//					game.setPlayerCards("");
+//					game.setDealerCards("");
+//					thisGame.getPlayer(1).resetStay();
+//				}
+				
+			}	
 		}
 	}
 	
-	//not important
+	//initialize game table
 	private static void update(){
-		game.setPlayerCards(thisGame.getPlayer().getHand());
-		game.setDealerCards(thisGame.getDealer().getHand());
 		game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
 		game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
 	}

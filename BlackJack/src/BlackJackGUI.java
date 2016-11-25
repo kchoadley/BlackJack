@@ -19,6 +19,7 @@ public class BlackJackGUI extends JFrame{
 	private boolean wantsDouble;
 	private boolean wantsIncrease;
 	private boolean wantsDecrease;
+	private boolean wantsDeal;
 	
 	private int wantedBetAmount;
 	private boolean updateBet;
@@ -26,6 +27,8 @@ public class BlackJackGUI extends JFrame{
 	private boolean outOfRound;
 	private boolean outOfChips;
 	private boolean hideDouble;
+	
+	private boolean playAgain;
 	
 	
 	
@@ -65,6 +68,8 @@ public class BlackJackGUI extends JFrame{
 		private JButton jbtDouble = new JButton("Double");
 		private JButton jbtIncreaseBet = new JButton("Increase Bet");
 		private JButton jbtDecreaseBet = new JButton("Decrease Bet");
+		private JButton jbtDeal = new JButton("Deal");
+		private JButton jbtPlayAgain = new JButton("Play Again");
 		
 	private JPanel jpEmpty = new JPanel();	
 	private JPanel jpBottom = new JPanel();
@@ -127,6 +132,10 @@ public class BlackJackGUI extends JFrame{
 		jpButtons.add(jbtIncreaseBet,gbc);
 		gbc.gridy = 1;
 		jpButtons.add(jbtDecreaseBet,gbc);
+		gbc.gridy = 2;
+		jpButtons.add(jbtDeal,gbc);
+		gbc.gridy = 2;
+		jpButtons.add(jbtPlayAgain,gbc);
 		
 		gbc.gridy = 0;
 		mainPanel.add(jpDealer,gbc);
@@ -157,6 +166,51 @@ public class BlackJackGUI extends JFrame{
 				hasStayed = true;
 			}
 		});
+		
+		jbtDouble.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				wantsDouble = true;
+			}
+		});
+		
+		jbtIncreaseBet.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				wantsIncrease = true;
+			}
+		});
+		
+		jbtDecreaseBet.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				wantsDecrease = true;
+			}
+		});
+		
+		jbtDeal.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				wantsDeal = true;
+			}
+		});
+		
+		jbtPlayAgain.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				playAgain = true;
+			}
+		});
 	}
 	
 	public void setChips(String in){jlChipsCount.setText(in);}
@@ -171,15 +225,23 @@ public class BlackJackGUI extends JFrame{
 	
 	
 	public void resetHit(){hasHit = false;}
-	public void resetStay(){hasHit = false;}
+	public void resetStay(){hasStayed = false;}
+	public void resetDouble(){wantsDouble = false;}
+	public void resetIncrease(){wantsIncrease = false;}
+	public void resetDecrease(){wantsDecrease = false;}
+	public void resetDeal(){wantsDeal = false;}
+	public void resetPlayAgain(){playAgain = false;}
 	
+	public void DisableHit(){jbtHit.setEnabled(false);}
+	public void DisableStay(){jbtStay.setEnabled(false);}
 	public void DisableDouble(){jbtDouble.setEnabled(false);}
 	public void DisableSplit(){jbtSplit.setEnabled(false);}
 	public void DisableDecrease(){jbtDecreaseBet.setEnabled(false);}
 	public void DisableIncrease(){jbtIncreaseBet.setEnabled(false);}
 	public void DisablePlayer(){jbtHit.setEnabled(false); jbtStay.setEnabled(false);}
 	
-	
+	public void EnableHit(){jbtHit.setEnabled(true);}
+	public void EnableStay(){jbtStay.setEnabled(true);}
 	public void EnableDouble(){jbtDouble.setEnabled(true);}
 	public void EnableSplit(){jbtSplit.setEnabled(true);}
 	public void EnableDecrease(){jbtDecreaseBet.setEnabled(true);}
@@ -194,6 +256,8 @@ public class BlackJackGUI extends JFrame{
 	public boolean getDouble(){return wantsDouble;}
 	public boolean getIncrease(){return wantsIncrease;}
 	public boolean getDecrease(){return wantsDecrease;}
+	public boolean getDeal(){return wantsDeal;}
+	public boolean getPlayAgain(){return playAgain;}
 	
 }
 

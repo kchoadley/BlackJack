@@ -65,6 +65,8 @@ public class Player {
 			this.npc = true;
 		}
 		else{
+			if(DEALER == name)
+				this.name = "Player " + players;
 			this.name = name;
 			this.chips = 5000;
 			this.bet = 200;
@@ -96,6 +98,8 @@ public class Player {
 			this.npc = true;
 		}
 		else{
+			if(DEALER == name)
+				this.name = "Player " + players;
 			this.name = name;
 			this.chips = startingChips;
 			this.bet = 200;

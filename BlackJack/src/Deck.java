@@ -1,4 +1,12 @@
 import java.util.*;
+/**
+ * A Deck class that holds playing cards of the Card class. When created it adds 52 shuffled cards.
+ * It is a singleton class, there can only be 1 Deck and it must be referenced with getInstance.
+ * If the deck runs out of cards, it shuffles all the cards before dealing a card.
+ * 
+ * @author Kristofer
+ *
+ */
 public class Deck {
 	private static Deck obj;
 	private static Card[] deck;
@@ -97,7 +105,7 @@ public class Deck {
 		return deck.length/52;
 	}
 	//for testing deck.
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
     	Deck deck = Deck.getInstance();
     	for(int i = 0; i<55;i++){
     		//System.out.println(deck.dealCard().toString());
@@ -115,5 +123,5 @@ public class Deck {
     	if(deck == deck2){
     		System.out.println("They are the same!");
     	}
-	}
+	}*/
 }

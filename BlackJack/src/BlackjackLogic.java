@@ -210,6 +210,20 @@ public class BlackjackLogic {
 			return true;
 		return false;
 	}
+	/*
+	 * Checks current player to see if they are npc. If so, takes their turn.
+	 * Does not end the turn.
+	 */
+	public void npcTurn(){
+		if(getTurn().getHandValue()<21){
+			if(getTurn().canSplit() && getTurn() != getDealer())
+				getTurn().splitHand();
+			while(getTurn().getHandValue()<17)
+				getTurn().receiveCard(deck.dealCard());
+			while(getTurn().getSplitHandValue()<17 && getTurn().hasSplitHand())
+				getTurn().receiveSplitHandCard(deck.dealCard());
+		}
+	}
 	// Runs the game.
 	/*public static void main(String args[]){
 		// Initialize deck and players.

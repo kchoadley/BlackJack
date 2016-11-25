@@ -1,4 +1,10 @@
-
+/**
+ * A playing Card class that stores an enum for the face and an enum for the value.
+ * When returning the value of the face, ACE is 1.
+ * 
+ * @author Kristofer
+ *
+ */
 public class Card {
 	public enum Suit{
 		HEART("\u2665"), DIAMOND("\u2666"), CLUB("\u2663"), SPADE("\u2660");

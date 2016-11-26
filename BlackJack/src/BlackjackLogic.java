@@ -21,7 +21,7 @@ public class BlackjackLogic {
 	private static int turn;
 	private static int rounds;
 	private StringBuilder endResults;
-	private static Deck deck;
+	public Deck deck;
 	/**
 	 * Default constructor contains 2 players.
 	 */
@@ -30,7 +30,7 @@ public class BlackjackLogic {
 		this.players = new Player[2];
 		rounds = 1;
 		turn = -1;
-		this.endResults = new StringBuilder("This is the end results\n");
+		this.endResults = new StringBuilder("Players Added\n");
 		deck = Deck.getInstance();
 		deck.shuffle();
 	}
@@ -144,6 +144,7 @@ public class BlackjackLogic {
 					else if(getPlayer(i).getHandValue() == getDealer().getHandValue())
 						getPlayer(i).addChips(getPlayer(i).getBet());
 				}
+				/*
 				if(getPlayer(i).getSplitHandValue()<=21 && getPlayer(i).hasSplitHand()){
 					//player wins
 					if(getPlayer(i).hasSplitHandBlackjack())
@@ -154,6 +155,7 @@ public class BlackjackLogic {
 					else if(getPlayer(i).getSplitHandValue() == getDealer().getHandValue())
 						getPlayer(i).addChips(getPlayer(i).getBet());
 				}
+				*/
 				
 			}
 		}
@@ -166,13 +168,13 @@ public class BlackjackLogic {
 			players[i].discardHand();
 		}
 	}
-	public static void endTurn(){
+	public void endTurn(){
 		if(turn == 0){
 			turn = top-1;
 			rounds++;
 		}
 		else
-			turn--;
+			turn = 0;
 	}
 	/**
 	 * Returns the player whose turn it is.
@@ -216,7 +218,7 @@ public class BlackjackLogic {
 	public void removeDeadPlayers(){
 		for(int player = top-1; player>0; player--){
 			if(players[player].getChips()-players[player].getBet() < 0){
-				endResults.append(players[player].toString() + "\n");
+				this.endResults.append(players[player].toString() + "\n");
 				top--;
 				for(int i=player; i < top; i++){
 					players[i] = players[i+1];
@@ -239,12 +241,12 @@ public class BlackjackLogic {
 	 */
 	public void npcTurn(){
 		if(getTurn().getHandValue()<21){
-			if(getTurn().canSplit() && getTurn() != getDealer())
-				getTurn().splitHand();
+			//if(getTurn().canSplit() && getTurn() != getDealer())
+			//	getTurn().splitHand();
 			while(getTurn().getHandValue()<17)
 				getTurn().receiveCard(deck.dealCard());
-			while(getTurn().getSplitHandValue()<17 && getTurn().hasSplitHand())
-				getTurn().receiveSplitHandCard(deck.dealCard());
+			//while(getTurn().getSplitHandValue()<17 && getTurn().hasSplitHand())
+				//getTurn().receiveSplitHandCard(deck.dealCard());
 		}
 	}
 	// Runs the game.

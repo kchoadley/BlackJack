@@ -162,6 +162,7 @@ public class BlackjackMain {
 				}
 				//when player has doubled
 				if(game.getDouble()){
+					thisGame.getPlayer().setDoubleDown(true);
 					thisGame.getPlayer().removeChips(thisGame.getPlayer().getBet());
 					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
 					game.DisableDouble();

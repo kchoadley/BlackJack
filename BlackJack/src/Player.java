@@ -28,6 +28,11 @@ public class Player {
 	 * Default constructor. If it is creating the first player it creates the dealer.
 	 * Use for dealer creation.
 	 */
+	public static void ResetPlayers(){
+		players = 0;
+	}
+	
+	
 	public Player(){
 		if(players == 0){
 			this.name = DEALER;
@@ -228,14 +233,14 @@ public class Player {
 		//Must have only two cards, faces must match, and have enough chips to split.
 		if(hasSplitHand)
 			return false;
-		if(top==2 && hand[0].face == hand[1].face && this.chips-this.getBet()>=0 && this.name != DEALER)
+		if(top==2 && hand[0].face == hand[1].face && this.chips-this.getBet()>=0 && this.getBet() > 0 && this.name != DEALER)
 			return true;
 		return false;
 	}
 	
 	public boolean canDouble(){
 		//Must have two cards and enough to bet
-		if(top==2 && this.chips-this.getBet()>=0 && this.name != DEALER && !this.hasStayed && !doubleDown)
+		if(top==2 && this.chips-this.getBet()>=0 && this.getBet() > 0 && this.name != DEALER && !this.hasStayed && !doubleDown)
 			return true;
 		return false;
 	}

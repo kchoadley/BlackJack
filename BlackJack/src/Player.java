@@ -11,6 +11,7 @@ public class Player {
 	private boolean aces;
 	private boolean splitHandAces;
 	private boolean hasSplitHand;
+	private boolean doubleDown;
 	private Card[] hand;
 	private Card[] splitHand;
 	private int top;
@@ -51,6 +52,7 @@ public class Player {
 		this.firstHandShowing = true;
 		this.roundsPlayed = 0;
 		this.maxChips = this.chips;
+		this.doubleDown = false;
 	}
 	/**
 	 * Creates a player. If it is the first player, it creates the dealer.
@@ -84,6 +86,7 @@ public class Player {
 		this.firstHandShowing = true;
 		this.roundsPlayed = 0;
 		this.maxChips = this.chips;
+		this.doubleDown = false;
 	}
 	/**
 	 * Creates a player. If it is the first player, it creates the dealer.
@@ -117,6 +120,7 @@ public class Player {
 		this.firstHandShowing = true;
 		this.roundsPlayed = 0;
 		this.maxChips = this.chips;
+		this.doubleDown = false;
 	}
 	/**
 	 * Return name of player.
@@ -175,6 +179,12 @@ public class Player {
 	 * Sets values needed on stay of a hand by the player
 	 * @param
 	 */
+	public boolean getDoubleDown(){
+		return doubleDown;
+	}
+	public void setDoubleDown(boolean doubleDown){
+		this.doubleDown = doubleDown;
+	}
 	public void resetStay(){
 		this.hasStayed = false;
 		this.firstHandShowing = false;
@@ -225,7 +235,7 @@ public class Player {
 	
 	public boolean canDouble(){
 		//Must have two cards and enough to bet
-		if(top==2 && this.chips-this.getBet()>=0 && this.name != DEALER && !this.hasStayed)
+		if(top==2 && this.chips-this.getBet()>=0 && this.name != DEALER && !this.hasStayed && !doubleDown)
 			return true;
 		return false;
 	}

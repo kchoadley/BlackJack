@@ -133,6 +133,29 @@ public class BlackjackLogic {
 				else if(getPlayer(i).getSplitHandValue() == getDealer().getHandValue())
 					getPlayer(i).addChips(getPlayer(i).getBet());
 			}
+			if(players[1].getDoubleDown()){
+				if(players[i].getHandValue()<=21){
+					//player wins
+					if(players[i].hasBlackjack())
+						players[i].addChips((int)(getPlayer(i).getBet()*2.5));
+					else if(getPlayer(i).getHandValue() > getDealer().getHandValue() || getDealer().getHandValue()>21)
+						getPlayer(i).addChips(getPlayer(i).getBet()*2);
+					//push
+					else if(getPlayer(i).getHandValue() == getDealer().getHandValue())
+						getPlayer(i).addChips(getPlayer(i).getBet());
+				}
+				if(getPlayer(i).getSplitHandValue()<=21 && getPlayer(i).hasSplitHand()){
+					//player wins
+					if(getPlayer(i).hasSplitHandBlackjack())
+						getPlayer(i).addChips((int)(getPlayer(i).getBet()*2.5));
+					else if(getPlayer(i).getSplitHandValue() > getDealer().getHandValue() || getDealer().getHandValue()>21)
+						getPlayer(i).addChips(getPlayer(i).getBet()*2);
+					//push
+					else if(getPlayer(i).getSplitHandValue() == getDealer().getHandValue())
+						getPlayer(i).addChips(getPlayer(i).getBet());
+				}
+				
+			}
 		}
 	}
 	/**

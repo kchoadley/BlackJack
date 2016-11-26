@@ -172,6 +172,7 @@ public class GameLogic {
 				
 				//When player has hit
 				if(game.getHit()){
+					thisGame.getPlayer().setDoubleDown(true);
 					thisGame.getPlayer().receiveCard(deck.dealCard());
 					game.setPlayerCards(thisGame.getPlayer().getHand());
 					game.DisableDouble();

@@ -135,6 +135,9 @@ public class BlackJackGUI extends JFrame{
 		mainPanel.add(jpPlayer,gbc);
 		gbc.gridy = 2;
 		mainPanel.add(jpButtons, gbc);
+		gbc.gridy = 3;
+		jpBottom.add(jlInfo);
+		mainPanel.add(jpBottom,gbc);
 		
 		mainPanel.setBackground(Color.GREEN);
 		
@@ -214,6 +217,10 @@ public class BlackJackGUI extends JFrame{
 	public void setPlayerCards(String in){jlPlayerCards.setText(in);}
 	public void setDealerCards(String in){jlDealerCards.setText(in);}
 	public void setFirstHand(Boolean b){firstHand = b;}
+	
+	public void setInfo(String in){
+		jlInfo.setText(in);
+	}
 	
 	// Reset button values to false
 	public void resetHit(){hasHit = false;}

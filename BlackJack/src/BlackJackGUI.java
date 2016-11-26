@@ -118,7 +118,7 @@ public class BlackJackGUI extends JFrame{
 		gbc.gridy = 0;
 		jpButtons.add(jbtStay,gbc);
 		gbc.gridy = 1;
-		jpButtons.add(jbtSplit,gbc);
+		jpButtons.add(jbtDeal,gbc);
 		gbc.gridy = 1;
 		jpButtons.add(jbtDouble,gbc);
 		gbc.gridy = 0;
@@ -126,7 +126,7 @@ public class BlackJackGUI extends JFrame{
 		gbc.gridy = 1;
 		jpButtons.add(jbtDecreaseBet,gbc);
 		gbc.gridy = 2;
-		jpButtons.add(jbtDeal,gbc);
+		//jpButtons.add(jbtDeal,gbc);
 		gbc.gridy = 2;
 		jpButtons.add(jbtNewGame,gbc);
 		gbc.gridy = 0;

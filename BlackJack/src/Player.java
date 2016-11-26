@@ -3,6 +3,7 @@
  * The first player created should be the dealer. No other player should have name "Dealer".
  * 
  * @author Kristofer
+ * @author Kailab
  *
  */
 public class Player {

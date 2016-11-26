@@ -44,7 +44,7 @@ public class GameLogic {
 		while(running){
 			start = System.nanoTime();
 			elapsed = System.nanoTime() - start;
-			wait = (targetTime  - elapsed / 1000000 < 0 ? 5 : targetTime - elapsed / 1000000)*60;	//every second
+			wait = (targetTime  - elapsed / 1000000 < 0 ? 5 : targetTime - elapsed / 1000000);	//every second
 			try{Thread.sleep(wait);}
 			catch(Exception e){
 				e.printStackTrace();}

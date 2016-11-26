@@ -184,22 +184,25 @@ public class GameLogic {
 						game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
 					}
 					game.setFirstHand(false);
-					//if(thisGame.getPlayer().hasBlackjack())
-					//	thisGame.getPlayer().setStay();
+					if(thisGame.getPlayer().hasBlackjack())
+						thisGame.getPlayer().setStay();
 				}
 				
+				/*
 				//logic for allowing player to split
-				//if(thisGame.getPlayer().canSplit()){
-				//	game.EnableSplit();	
-				//}
-				//else{
-				//	game.DisableSplit();
-				//}
-				//if(game.getSplit()){
-				//	thisGame.getPlayer().splitHand();
-				//	game.setPlayerCards(thisGame.getPlayer().getHand());
-				//	game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
-				//}
+				if(thisGame.getPlayer().canSplit()){
+					game.EnableSplit();	
+				}
+				else{
+					game.DisableSplit();
+				}
+				if(game.getSplit()){
+					thisGame.getPlayer().splitHand();
+					game.setPlayerCards(thisGame.getPlayer().getHand());
+					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+				}
+				 */
+				
 				
 				//logic for allowing player to double
 				if(thisGame.getPlayer().canDouble()){

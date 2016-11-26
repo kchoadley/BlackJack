@@ -141,6 +141,8 @@ public class BlackJackGUI extends JFrame{
 		
 		mainPanel.setBackground(Color.GREEN);
 		
+		jbtSplit.setEnabled(false);
+		
 		canvas.add(mainPanel);
 		
 		// Listeners for the buttons
@@ -250,7 +252,7 @@ public class BlackJackGUI extends JFrame{
 	public void EnableDecrease(){jbtDecreaseBet.setEnabled(true);}
 	public void EnableIncrease(){jbtIncreaseBet.setEnabled(true);}
 	public void EnableDeal(){jbtDeal.setEnabled(true);}
-	public void EnablePlayAgain(){jbtNewGame.setEnabled(true);}
+	public void EnableNewGame(){jbtNewGame.setEnabled(true);}
 	public void EnablePlayer(){jbtHit.setEnabled(true); jbtStay.setEnabled(true);}
 	
 	

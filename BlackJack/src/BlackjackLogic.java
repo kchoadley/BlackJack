@@ -12,6 +12,7 @@
  * 
  * 
  * @author Kristofer
+ * @author Kailab
  *
  */
 public class BlackjackLogic {
@@ -115,13 +116,24 @@ public class BlackjackLogic {
 		for(int i = top-1; i >0;i--){
 			if(players[i].getHandValue()<=21){
 				//player wins
-				if(players[i].hasBlackjack())
+				if(players[i].hasBlackjack()){
+					this.endResults = new StringBuilder("You got a Black Jack with winnings of: " + getPlayer(i).getBet()*2.5 );
 					players[i].addChips((int)(getPlayer(i).getBet()*2.5));
-				else if(getPlayer(i).getHandValue() > getDealer().getHandValue() || getDealer().getHandValue()>21)
+				}
+				else if(getPlayer(i).getHandValue() > getDealer().getHandValue() || getDealer().getHandValue()>21){
+					this.endResults = new StringBuilder("You won: " + getPlayer(i).getBet()*2 );
 					getPlayer(i).addChips(getPlayer(i).getBet()*2);
+				}
 				//push
-				else if(getPlayer(i).getHandValue() == getDealer().getHandValue())
+				else if(getPlayer(i).getHandValue() == getDealer().getHandValue()){
+					this.endResults = new StringBuilder("You tied with the house, bet of " + getPlayer(i).getBet() + " chips was returned");
 					getPlayer(i).addChips(getPlayer(i).getBet());
+				}
+				
+			}
+			else{
+				this.endResults = new StringBuilder("You lost " + getPlayer(i).getBet() + " chips.");
+				
 			}
 			if(getPlayer(i).getSplitHandValue()<=21 && getPlayer(i).hasSplitHand()){
 				//player wins
@@ -249,102 +261,5 @@ public class BlackjackLogic {
 				//getTurn().receiveSplitHandCard(deck.dealCard());
 		}
 	}
-	// Runs the game.
-	/*public static void main(String args[]){
-		// Initialize deck and players.
-		BlackjackLogic thisGame = new BlackjackLogic(5);
-		thisGame.addPlayer(new Player());
-		thisGame.addPlayer(new Player("Ted",true));
-		thisGame.getPlayer(1).setBet(200);
-		thisGame.addPlayer(new Player("Kris",true));
-		thisGame.getPlayer(2).setBet(300);
-		thisGame.addPlayer(new Player("Connor",true));
-		thisGame.addPlayer(new Player("Kailab",true));
-		thisGame.getPlayer(4).setBet(500);
-		// Sets number of decks to increase by 1 for every 3 players.
-		
-		// Tracks minimum number of cards in deck at any point.
-		int deckMinimum = 52*deck.getDecks();
-		// Game loop.
-		do{
-			// Resets everyone's hands.
-			thisGame.discardHands();
-			//Reshuffle deck every 5 hands.
-			if(thisGame.getRounds()%5 == 0){
-				deck.shuffle();
-			}
-			// Here is where the GUI should ask to increase or decrease bet. Disable increase bet button if it will reduce chips below 0.
-			//Check bet for each player and remove chips.
-			for(int i = 1; i<thisGame.getPlayers();i++){
-				thisGame.getPlayer(i).removeChips(thisGame.getPlayer(i).getBet());
-			}
-			// Deal two cards to each player.
-			thisGame.dealHand(deck);
-			thisGame.dealHand(deck);
-			// Initial printout of everyone's cards.
-			System.out.println(thisGame.allHandstoString());
-			// If dealer has Blackjack, ends round. Pushes if player has Blackjack.
-			if(thisGame.getPlayer(0).hasBlackjack()){
-				for(int i = 1; i<thisGame.getPlayers();i++){
-					if(thisGame.getPlayer(i).hasBlackjack())
-						thisGame.getPlayer(i).addChips(thisGame.getPlayer(i).getBet());
-				}
-				// Start next round.
-				continue;
-			}
-			// Each player plays their round.
-			// Starts with last player and stops at dealer.
-			// Every player has to be NPC for now. No inputs yet.
-			for(int i = thisGame.getPlayers()-1; i >=0;i--){
-				// Prevents hitting if hand value is 21 (or higher).
-				if(thisGame.getPlayer(i).getHandValue()<21){
-					// NPC logic.
-					if(thisGame.getPlayer(i).isNPC())
-						if(thisGame.getPlayer(i).canSplit())
-							thisGame.getPlayer(i).splitHand();
-						while(thisGame.getPlayer(i).getHandValue()<17){
-							thisGame.getPlayer(i).receiveCard(deck.dealCard());
-							deckMinimum = deckMinimum>deck.cardsLeft() ? deck.cardsLeft() : deckMinimum;
-						}
-						while(thisGame.getPlayer(i).getSplitHandValue()<17 && thisGame.getPlayer(i).hasSplitHand()){
-							thisGame.getPlayer(i).receiveSplitHandCard(deck.dealCard());
-							deckMinimum = deckMinimum>deck.cardsLeft() ? deck.cardsLeft() : deckMinimum;
-						}
-					// First check if can split, implement split logic.
-					// Check if can double down, implement double down logic.
-					// This is where the interaction with the GUI hit / stay should go.
-				}
-			}
-			
-			//check each player's hand against the dealer's hand and give out chips if they won.
-			for(int i = thisGame.getPlayers()-1; i >0;i--){
-				if(thisGame.getPlayer(i).getHandValue()<=21){
-					//player wins
-					if(thisGame.getPlayer(i).hasBlackjack())
-						thisGame.getPlayer(i).addChips((int)(thisGame.getPlayer(i).getBet()*2.5));
-					else if(thisGame.getPlayer(i).getHandValue() > thisGame.getPlayer(0).getHandValue() || thisGame.getPlayer(0).getHandValue()>21)
-						thisGame.getPlayer(i).addChips(thisGame.getPlayer(i).getBet()*2);
-					//push
-					else if(thisGame.getPlayer(i).getHandValue() == thisGame.getPlayer(0).getHandValue())
-						thisGame.getPlayer(i).addChips(thisGame.getPlayer(i).getBet());
-				}
-				if(thisGame.getPlayer(i).getSplitHandValue()<=21 && thisGame.getPlayer(i).hasSplitHand()){
-					//player wins
-					if(thisGame.getPlayer(i).hasSplitHandBlackjack())
-						thisGame.getPlayer(i).addChips((int)(thisGame.getPlayer(i).getBet()*2.5));
-					else if(thisGame.getPlayer(i).getSplitHandValue() > thisGame.getPlayer(0).getHandValue() || thisGame.getPlayer(0).getHandValue()>21)
-						thisGame.getPlayer(i).addChips(thisGame.getPlayer(i).getBet()*2);
-					//push
-					else if(thisGame.getPlayer(i).getSplitHandValue() == thisGame.getPlayer(0).getHandValue())
-						thisGame.getPlayer(i).addChips(thisGame.getPlayer(i).getBet());
-				}
-			}
-			// After everyone plays their hand, prints the hands.
-			System.out.println(thisGame.allHandstoString());
-			//Remove players without enough chips.
-			thisGame.removeDeadPlayers();			
-		}while(thisGame.someoneHasChips());
-		System.out.println("Deck minimum cards at any point: " + deckMinimum);
-		System.out.println(thisGame.toString());
-	}*/
+	
 }

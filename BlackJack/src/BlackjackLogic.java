@@ -133,7 +133,7 @@ public class BlackjackLogic {
 				else if(getPlayer(i).getSplitHandValue() == getDealer().getHandValue())
 					getPlayer(i).addChips(getPlayer(i).getBet());
 			}
-			if(players[1].getDoubleDown()){
+			if(getPlayer().getDoubleDown()){
 				if(players[i].getHandValue()<=21){
 					//player wins
 					if(players[i].hasBlackjack())

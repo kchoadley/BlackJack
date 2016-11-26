@@ -49,6 +49,30 @@ public class GameLogic {
 			catch(Exception e){
 				e.printStackTrace();}
 			
+			// Check to see if game over
+			thisGame.removeDeadPlayers();
+			if(!thisGame.someoneHasChips()){
+				game.resetDeal();
+				game.resetDecrease();
+				game.resetIncrease();
+				game.resetHit();
+				game.resetStay();
+				game.resetNewGame();
+				game.EnablePlayAgain();
+				game.DisableDeal();
+				game.DisableHit();
+				game.DisableStay();
+				game.DisableSplit();
+				game.DisableDecrease();
+				game.DisableIncrease();
+				game.DisableDouble();
+				thisGame = new BlackjackLogic();
+				thisGame.addPlayer(new Player());
+				thisGame.addPlayer(new Player());
+				game.setPlayerName(thisGame.getPlayer().getName());
+				game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+				game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
+			}
 			if(game.getPlayAgain()== false){
 				game.EnablePlayAgain();
 			}
@@ -62,6 +86,7 @@ public class GameLogic {
 				game.DisableSplit();
 				game.DisableDouble();
 				game.EnableDeal();
+				
 				
 				// enable or disable buttons for increasing and decreasing bet.
 				if(thisGame.getPlayer().getChips()-thisGame.getPlayer().getBet()>=betIncrement)
@@ -105,29 +130,9 @@ public class GameLogic {
 						deck.shuffle();
 					}
 					game.setShuffleAmount(Integer.toString(5-thisGame.getRounds()%5));
-					
-					
-					thisGame.removeDeadPlayers();
 					thisGame.discardHands();
-					if(!thisGame.someoneHasChips()){
-						game.EnablePlayAgain();
-						game.DisableDeal();
-						game.DisableHit();
-						game.DisableStay();
-						game.DisableSplit();
-						game.DisableDecrease();
-						game.DisableIncrease();
-						game.DisableDouble();
-						thisGame = new BlackjackLogic();
-						thisGame.addPlayer(new Player());
-						thisGame.addPlayer(new Player());
-						game.setPlayerName(thisGame.getPlayer().getName());
-						game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
-						game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
-					}
-					else{
-						game.DisableNewGame();
-					}
+					
+
 					
 					thisGame.dealHand(deck);
 					thisGame.dealHand(deck);
@@ -135,6 +140,11 @@ public class GameLogic {
 					game.setDealerCards(thisGame.getDealer().getHand());
 					thisGame.getPlayer().removeChips(thisGame.getPlayer().getBet());
 					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+					// Ensure bet isn't more than chips left.
+					if(thisGame.getPlayer().getChips()<thisGame.getPlayer().getBet()){
+						thisGame.getPlayer().setBet(thisGame.getPlayer().getChips());
+						game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
+					}
 					game.setFirstHand(false);
 					if(thisGame.getPlayer().hasBlackjack())
 						thisGame.getPlayer().setStay();
@@ -203,6 +213,7 @@ public class GameLogic {
 						game.resetDeal();
 						game.getDeal();
 						thisGame.payTheWinners();
+						thisGame.getPlayer().setDoubleDown(false);
 						game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
 						if(!thisGame.someoneHasChips())
 							game.resetNewGame();

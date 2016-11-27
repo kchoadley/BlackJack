@@ -13,7 +13,6 @@
  *
  */
 public class GameLogic {
-	private static int counter = 0;
 	private static boolean running;
 	private static int FPS = 60;
 	private static long targetTime = 1000/FPS;
@@ -35,17 +34,17 @@ public class GameLogic {
 		game.setPlayerName(thisGame.getPlayer().getName());
 		game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
 		game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
-		deck = thisGame.deck;
+		game.setShuffleAmount(Integer.toString(5));
 		run();
 		
 	}
 	public static void run(){
-		
 		long start;
 		long elapsed;
 		long wait;
 		while(running){
 			game.setInfo(thisGame.toString());
+			
 			start = System.nanoTime();
 			elapsed = System.nanoTime() - start;
 			wait = (targetTime  - elapsed / 1000000 < 0 ? 5 : targetTime - elapsed / 1000000);	//every second
@@ -62,7 +61,7 @@ public class GameLogic {
 				game.resetHit();
 				game.resetStay();
 				game.resetNewGame();
-				game.EnableNewGame();
+				game.EnablePlayAgain();
 				game.DisableDeal();
 				game.DisableHit();
 				game.DisableStay();
@@ -78,14 +77,13 @@ public class GameLogic {
 				game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
 			}
 			if(game.getPlayAgain()== false){
-				game.EnableNewGame();
+				game.EnablePlayAgain();
 			}
 			if (game.getDeal() == false && game.getPlayAgain()) {
 				//when player wants to increase bet
 				//doing betIncrement at 100 for now, we can make custom in a later version
 				
 				Player.ResetPlayers();
-				
 				
 				
 				if(thisGame.getPlayer().getChips() > 0){
@@ -131,7 +129,7 @@ public class GameLogic {
 					game.resetHit();
 					game.resetStay();
 					game.resetNewGame();
-					game.EnableNewGame();
+					game.EnablePlayAgain();
 					game.DisableDeal();
 					game.DisableHit();
 					game.DisableStay();
@@ -157,7 +155,7 @@ public class GameLogic {
 					game.DisableIncrease();
 					game.EnableHit();
 					game.EnableStay();
-					//game.EnableSplit();
+					game.EnableSplit();
 					game.EnableDouble();
 					game.resetHit();
 					game.resetDouble();
@@ -188,7 +186,6 @@ public class GameLogic {
 						thisGame.getPlayer().setStay();
 				}
 				
-				/*
 				//logic for allowing player to split
 				if(thisGame.getPlayer().canSplit()){
 					game.EnableSplit();	
@@ -201,8 +198,6 @@ public class GameLogic {
 					game.setPlayerCards(thisGame.getPlayer().getHand());
 					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
 				}
-				 */
-				
 				
 				//logic for allowing player to double
 				if(thisGame.getPlayer().canDouble()){
@@ -242,14 +237,13 @@ public class GameLogic {
 					game.DisablePlayer();
 					game.DisableDouble();
 					thisGame.getPlayer().resetStay();	
-					//game.resetDeal();
 					thisGame.endTurn();			
-				}
-				
-			//// NPC logic
+					}
+
+				//// NPC logic
 				if(thisGame.getTurn().isNPC()){
 					thisGame.npcTurn();
-					if(thisGame.getTurn() == (thisGame.getDealer())){
+					if(thisGame.getTurn()==thisGame.getDealer()){
 						game.setDealerCards(thisGame.getDealer().getHand());
 						game.EnableDeal();
 						game.resetDeal();
@@ -261,13 +255,8 @@ public class GameLogic {
 							game.resetNewGame();
 					}
 					thisGame.endTurn();
-					
 				}
-				
-			}
-			
-			
+			}	
 		}
-		//end of while running loop
 	}
 }

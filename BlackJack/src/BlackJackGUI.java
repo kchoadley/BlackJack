@@ -38,6 +38,11 @@ public class BlackJackGUI extends JFrame{
 		private JPanel jpDealerRight = new JPanel(new GridBagLayout());
 			private JLabel jlShuffleString = new JLabel("Until Shuffle");
 			private JLabel jlShuffleAmount = new JLabel("Amount");
+			//private JLabel jlChipsString = new JLabel("Chips");
+			//private JLabel jlChipsCount = new JLabel("Count");
+			
+	private JPanel jpChips = new JPanel(new GridBagLayout());
+		private JPanel jpChipsPanel = new JPanel(new GridBagLayout());
 			private JLabel jlChipsString = new JLabel("Chips");
 			private JLabel jlChipsCount = new JLabel("Count");
 	
@@ -76,9 +81,8 @@ public class BlackJackGUI extends JFrame{
 	
 		
 		gbc.insets = new Insets(15,15,15,15);
-		gbcDealer.insets = new Insets(0,10,0,10);
+		gbcDealer.insets = new Insets(5,5,5,0);
 		gbcPlayer.insets = new Insets(5,5,5,5);
-		
 		
 		canvas.setDefaultCloseOperation(EXIT_ON_CLOSE);		
 		canvas.setSize(400,600);
@@ -90,11 +94,10 @@ public class BlackJackGUI extends JFrame{
 		jpDealerLeft.add(jlDealerCards,gbcDealer);
 		
 		gbcDealer.gridy = 0;
-		jpDealerRight.add(jlShuffleAmount,gbcDealer);
 		jpDealerRight.add(jlShuffleString,gbcDealer);
+		
 		gbcDealer.gridy = 1;
-		jpDealerRight.add(jlChipsCount,gbcDealer);
-		jpDealerRight.add(jlChipsString,gbcDealer);
+		jpDealerRight.add(jlShuffleAmount,gbcDealer);
 		
 		jpDealer.add(jpDealerLeft);
 		jpDealer.add(jpEmpty);
@@ -106,9 +109,12 @@ public class BlackJackGUI extends JFrame{
 		jpPlayerLeft.add(jlPlayerCards,gbcPlayer);
 		
 		gbcPlayer.gridy = 0;
-		jpPlayerRight.add(jlBetAmount,gbcPlayer);
-		gbcPlayer.gridy = 0;
 		jpPlayerRight.add(jlBetString,gbcPlayer);
+		jpPlayerRight.add(jlChipsString,gbcPlayer);
+		gbcPlayer.gridy = 1;
+		jpPlayerRight.add(jlBetAmount,gbcPlayer);
+		jpPlayerRight.add(jlChipsCount,gbcPlayer);
+		
 		
 		jpPlayer.add(jpPlayerLeft);
 		jpPlayer.add(jpPlayerRight);
@@ -118,7 +124,7 @@ public class BlackJackGUI extends JFrame{
 		gbc.gridy = 0;
 		jpButtons.add(jbtStay,gbc);
 		gbc.gridy = 1;
-		jpButtons.add(jbtDeal,gbc);
+		jpButtons.add(jbtSplit,gbc);
 		gbc.gridy = 1;
 		jpButtons.add(jbtDouble,gbc);
 		gbc.gridy = 0;
@@ -126,7 +132,7 @@ public class BlackJackGUI extends JFrame{
 		gbc.gridy = 1;
 		jpButtons.add(jbtDecreaseBet,gbc);
 		gbc.gridy = 2;
-		//jpButtons.add(jbtDeal,gbc);
+		jpButtons.add(jbtDeal,gbc);
 		gbc.gridy = 2;
 		jpButtons.add(jbtNewGame,gbc);
 		gbc.gridy = 0;
@@ -140,8 +146,6 @@ public class BlackJackGUI extends JFrame{
 		mainPanel.add(jpBottom,gbc);
 		
 		mainPanel.setBackground(Color.GREEN);
-		
-		jbtSplit.setEnabled(false);
 		
 		canvas.add(mainPanel);
 		
@@ -252,7 +256,7 @@ public class BlackJackGUI extends JFrame{
 	public void EnableDecrease(){jbtDecreaseBet.setEnabled(true);}
 	public void EnableIncrease(){jbtIncreaseBet.setEnabled(true);}
 	public void EnableDeal(){jbtDeal.setEnabled(true);}
-	public void EnableNewGame(){jbtNewGame.setEnabled(true);}
+	public void EnablePlayAgain(){jbtNewGame.setEnabled(true);}
 	public void EnablePlayer(){jbtHit.setEnabled(true); jbtStay.setEnabled(true);}
 	
 	

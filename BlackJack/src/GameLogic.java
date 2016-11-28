@@ -43,6 +43,8 @@ public class GameLogic {
 		long elapsed;
 		long wait;
 		while(running){
+			game.setInfo(thisGame.toString());
+			
 			start = System.nanoTime();
 			elapsed = System.nanoTime() - start;
 			wait = (targetTime  - elapsed / 1000000 < 0 ? 5 : targetTime - elapsed / 1000000);	//every second
@@ -80,35 +82,69 @@ public class GameLogic {
 			if (game.getDeal() == false && game.getPlayAgain()) {
 				//when player wants to increase bet
 				//doing betIncrement at 100 for now, we can make custom in a later version
-				game.DisableNewGame();
-				game.setFirstHand(true);
-				game.DisableHit();
-				game.DisableStay();
-				game.DisableSplit();
-				game.DisableDouble();
-				game.EnableDeal();
 				
-				// enable or disable buttons for increasing and decreasing bet.
-				if(thisGame.getPlayer().getChips()-thisGame.getPlayer().getBet()>=betIncrement)
-					game.EnableIncrease();
-				else
-					game.DisableIncrease();
-				if(thisGame.getPlayer().getBet()-betIncrement>0)
-					game.EnableDecrease();
-				else
-					game.DisableDecrease();
+				Player.ResetPlayers();
 				
-				if(game.getIncrease()){
-					thisGame.getPlayer().increaseBet(betIncrement);
-					game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
-					game.resetIncrease();
+				
+				if(thisGame.getPlayer().getChips() > 0){
+				
+				
+					game.DisableNewGame();
+					game.setFirstHand(true);
+					game.DisableHit();
+					game.DisableStay();
+					game.DisableSplit();
+					game.DisableDouble();
+					game.EnableDeal();
+					
+					
+					// enable or disable buttons for increasing and decreasing bet.
+					if(thisGame.getPlayer().getChips()-thisGame.getPlayer().getBet()>=betIncrement)
+						game.EnableIncrease();
+					else
+						game.DisableIncrease();
+					if(thisGame.getPlayer().getBet()-betIncrement>0)
+						game.EnableDecrease();
+					else
+						game.DisableDecrease();
+					
+					if(game.getIncrease()){
+						thisGame.getPlayer().increaseBet(betIncrement);
+						game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
+						game.resetIncrease();
+					}
+					
+					//when player wants to decrease bet
+					if(game.getDecrease()){
+						thisGame.getPlayer().decreaseBet(betIncrement);
+						game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
+						game.resetDecrease();
+					}
 				}
-				
-				//when player wants to decrease bet
-				if(game.getDecrease()){
-					thisGame.getPlayer().decreaseBet(betIncrement);
-					game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
+				else{
+					game.setFirstHand(false);
+					game.resetDeal();
 					game.resetDecrease();
+					game.resetIncrease();
+					game.resetHit();
+					game.resetStay();
+					game.resetNewGame();
+					game.EnablePlayAgain();
+					game.DisableDeal();
+					game.DisableHit();
+					game.DisableStay();
+					game.DisableSplit();
+					game.DisableDecrease();
+					game.DisableIncrease();
+					game.DisableDouble();
+					
+					thisGame = new BlackjackLogic();
+					thisGame.addPlayer(new Player());
+					thisGame.addPlayer(new Player());
+					
+					game.setPlayerName(thisGame.getPlayer().getName());
+					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+					game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
 				}
 			}
 			else {
@@ -201,7 +237,7 @@ public class GameLogic {
 					game.DisablePlayer();
 					game.DisableDouble();
 					thisGame.getPlayer().resetStay();	
-					BlackjackLogic.endTurn();			
+					thisGame.endTurn();			
 					}
 
 				//// NPC logic
@@ -218,7 +254,7 @@ public class GameLogic {
 						if(!thisGame.someoneHasChips())
 							game.resetNewGame();
 					}
-					BlackjackLogic.endTurn();
+					thisGame.endTurn();
 				}
 			}	
 		}

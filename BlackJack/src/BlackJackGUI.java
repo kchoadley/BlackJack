@@ -16,7 +16,7 @@ public class BlackJackGUI extends JFrame{
 	
 	private boolean hasHit;
 	private boolean hasStayed;
-	private boolean wantsSplit;
+	//private boolean wantsSplit;
 	private boolean wantsDouble;
 	private boolean wantsIncrease;
 	private boolean wantsDecrease;
@@ -57,7 +57,7 @@ public class BlackJackGUI extends JFrame{
 	private JPanel jpButtons = new JPanel(new GridBagLayout());
 		private JButton jbtHit = new JButton("Hit");
 		private JButton jbtStay = new JButton("Stay");
-		private JButton jbtSplit = new JButton("Split");
+		//private JButton jbtSplit = new JButton("Split");
 		private JButton jbtDouble = new JButton("Double");
 		private JButton jbtIncreaseBet = new JButton("Increase Bet");
 		private JButton jbtDecreaseBet = new JButton("Decrease Bet");
@@ -73,7 +73,7 @@ public class BlackJackGUI extends JFrame{
 		DisableHit();
 		DisableStay();
 		DisableDouble();
-		DisableSplit();
+		//DisableSplit();
 		DisableDecrease();
 		DisableIncrease();
 		DisablePlayer();
@@ -81,7 +81,7 @@ public class BlackJackGUI extends JFrame{
 	
 		
 		gbc.insets = new Insets(15,15,15,15);
-		gbcDealer.insets = new Insets(5,5,5,0);
+		gbcDealer.insets = new Insets(5,5,5,5);
 		gbcPlayer.insets = new Insets(5,5,5,5);
 		
 		canvas.setDefaultCloseOperation(EXIT_ON_CLOSE);		
@@ -119,22 +119,25 @@ public class BlackJackGUI extends JFrame{
 		jpPlayer.add(jpPlayerLeft);
 		jpPlayer.add(jpPlayerRight);
 		
+		
 		gbc.gridy = 0;
 		jpButtons.add(jbtHit,gbc);
 		gbc.gridy = 0;
-		jpButtons.add(jbtStay,gbc);
-		gbc.gridy = 1;
-		jpButtons.add(jbtSplit,gbc);
-		gbc.gridy = 1;
 		jpButtons.add(jbtDouble,gbc);
+		//gbc.gridy = 1;
+		//jpButtons.add(jbtSplit,gbc);
 		gbc.gridy = 0;
 		jpButtons.add(jbtIncreaseBet,gbc);
 		gbc.gridy = 1;
-		jpButtons.add(jbtDecreaseBet,gbc);
-		gbc.gridy = 2;
+		jpButtons.add(jbtStay,gbc);
+		gbc.gridy = 1;
 		jpButtons.add(jbtDeal,gbc);
+		gbc.gridy = 1;
+		jpButtons.add(jbtDecreaseBet,gbc);
+		
 		gbc.gridy = 2;
 		jpButtons.add(jbtNewGame,gbc);
+		
 		gbc.gridy = 0;
 		mainPanel.add(jpDealer,gbc);
 		gbc.gridy = 1;
@@ -241,7 +244,7 @@ public class BlackJackGUI extends JFrame{
 	public void DisableHit(){jbtHit.setEnabled(false);}
 	public void DisableStay(){jbtStay.setEnabled(false);}
 	public void DisableDouble(){jbtDouble.setEnabled(false);}
-	public void DisableSplit(){jbtSplit.setEnabled(false);}
+	//public void DisableSplit(){jbtSplit.setEnabled(false);}
 	public void DisableDecrease(){jbtDecreaseBet.setEnabled(false);}
 	public void DisableIncrease(){jbtIncreaseBet.setEnabled(false);}
 	public void DisablePlayer(){jbtHit.setEnabled(false); jbtStay.setEnabled(false);}
@@ -252,7 +255,7 @@ public class BlackJackGUI extends JFrame{
 	public void EnableHit(){jbtHit.setEnabled(true);}
 	public void EnableStay(){jbtStay.setEnabled(true);}
 	public void EnableDouble(){jbtDouble.setEnabled(true);}
-	public void EnableSplit(){jbtSplit.setEnabled(true);}
+	//public void EnableSplit(){jbtSplit.setEnabled(true);}
 	public void EnableDecrease(){jbtDecreaseBet.setEnabled(true);}
 	public void EnableIncrease(){jbtIncreaseBet.setEnabled(true);}
 	public void EnableDeal(){jbtDeal.setEnabled(true);}
@@ -262,7 +265,7 @@ public class BlackJackGUI extends JFrame{
 	
 	public boolean getHit(){return hasHit;}
 	public boolean getStay(){return hasStayed;}
-	public boolean getSplit(){return wantsSplit;}
+	//public boolean getSplit(){return wantsSplit;}
 	public boolean getDouble(){return wantsDouble;}
 	public boolean getIncrease(){return wantsIncrease;}
 	public boolean getDecrease(){return wantsDecrease;}

@@ -65,7 +65,7 @@ public class GameLogic {
 				game.DisableDeal();
 				game.DisableHit();
 				game.DisableStay();
-				game.DisableSplit();
+				//game.DisableSplit();
 				game.DisableDecrease();
 				game.DisableIncrease();
 				game.DisableDouble();
@@ -93,7 +93,7 @@ public class GameLogic {
 					game.setFirstHand(true);
 					game.DisableHit();
 					game.DisableStay();
-					game.DisableSplit();
+					//game.DisableSplit();
 					game.DisableDouble();
 					game.EnableDeal();
 					
@@ -133,7 +133,7 @@ public class GameLogic {
 					game.DisableDeal();
 					game.DisableHit();
 					game.DisableStay();
-					game.DisableSplit();
+					//game.DisableSplit();
 					game.DisableDecrease();
 					game.DisableIncrease();
 					game.DisableDouble();
@@ -155,7 +155,7 @@ public class GameLogic {
 					game.DisableIncrease();
 					game.EnableHit();
 					game.EnableStay();
-					game.EnableSplit();
+					//game.EnableSplit();
 					game.EnableDouble();
 					game.resetHit();
 					game.resetDouble();
@@ -186,7 +186,7 @@ public class GameLogic {
 						thisGame.getPlayer().setStay();
 				}
 				
-				//logic for allowing player to split
+				/*logic for allowing player to split
 				if(thisGame.getPlayer().canSplit()){
 					game.EnableSplit();	
 				}
@@ -197,7 +197,7 @@ public class GameLogic {
 					thisGame.getPlayer().splitHand();
 					game.setPlayerCards(thisGame.getPlayer().getHand());
 					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
-				}
+				}*/
 				
 				//logic for allowing player to double
 				if(thisGame.getPlayer().canDouble()){

@@ -314,7 +314,7 @@ public class Player {
 		if(top > 2)
 			this.firstHandShowing = false;
 		if(card.face == Card.Face.ACE){
-			aces = true;
+			this.aces = true;
 		}
 	}
 	/**
@@ -342,6 +342,8 @@ public class Player {
 	 */
 	public String getHand(){
 		StringBuilder s = new StringBuilder("");
+		// next line for testing. Displays the hand value. (Dealer value is always shown too)
+		//s.append(getHandValue() + " ");
 		for(int i = 0; i < top; i++){
 			if(this.name.equals(DEALER)&& i==1 &&firstHandShowing){
 				s.append("?? ");
@@ -368,7 +370,7 @@ public class Player {
 		for(int j = 0; j < top; j++){
 			i += hand[j].getValue();
 		}
-		if(aces && i + 10 <= 21){
+		if(this.aces && i + 10 <= 21){
 			i += 10;
 		}
 		return i;

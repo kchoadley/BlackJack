@@ -117,9 +117,11 @@ public class BlackjackLogic {
 		if(getDealer().hasBlackjack()){
 			for(int i = 1; i<getPlayers();i++){
 				if(getPlayer(i).hasBlackjack()){
-					this.endResults = new StringBuilder("You and the house got a Black Jack");
+					this.endResults = new StringBuilder("You and the house have Blackjack, " + getPlayer(i).getBetOnTable() + " chips returned");
 					getPlayer(i).addChips(getPlayer(i).getBetOnTable());
 				}
+				else
+					this.endResults = new StringBuilder("You lost" + getPlayer(i).getBetOnTable() + " chips, the house has Blackjack");
 			}
 			// Start next round.
 			return;
@@ -148,7 +150,7 @@ public class BlackjackLogic {
 			else{
 				this.endResults = new StringBuilder("You lost " + getPlayer(i).getBetOnTable() + " chips.");
 				
-			}
+			}/*
 			if(getPlayer(i).getSplitHandValue()<=21 && getPlayer(i).hasSplitHand()){
 				//player wins
 				if(getPlayer(i).hasSplitHandBlackjack())
@@ -158,7 +160,7 @@ public class BlackjackLogic {
 				//push
 				else if(getPlayer(i).getSplitHandValue() == getDealer().getHandValue())
 					getPlayer(i).addChips(getPlayer(i).getBet());
-			}
+			}*/
 		}
 	}
 	/**

@@ -1,10 +1,4 @@
 /**
- * Things to add:
- * 		- Field for entering user name at new game screen.
- * 		- JLabel at bottom of screen for dialog out to player
- * 		- Split hand input (not functional at moment)
- * 		- Test reseting the game after game over.
- * 		- 
  * 
  * @author Kailab Bowler
  * @author Kristofer Hoadley
@@ -24,10 +18,12 @@ public class GameLogic {
 	public static int countDown = 1000;
 
 	public static void main(String[] args){
+		// Builds new Blackjack game.
 		thisGame = new BlackjackLogic();
 		game = new BlackJackGUI();
 		game.setSize(400,600);
 		running = true;
+		// Set betting increment
 		betIncrement = 200;
 		thisGame.addPlayer(new Player());
 		thisGame.addPlayer(new Player());
@@ -36,7 +32,6 @@ public class GameLogic {
 		game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
 		game.setShuffleAmount(Integer.toString(5));
 		run();
-		
 	}
 	public static void run(){
 		long start;
@@ -52,43 +47,13 @@ public class GameLogic {
 			catch(Exception e){
 				e.printStackTrace();}
 			
-			// Check to see if game over
-			thisGame.removeDeadPlayers();
-			if(!thisGame.someoneHasChips()){
-				game.resetDeal();
-				game.resetDecrease();
-				game.resetIncrease();
-				game.resetHit();
-				game.resetStay();
-				game.resetNewGame();
-				game.EnablePlayAgain();
-				game.DisableDeal();
-				game.DisableHit();
-				game.DisableStay();
-				//game.DisableSplit();
-				game.DisableDecrease();
-				game.DisableIncrease();
-				game.DisableDouble();
-				thisGame = new BlackjackLogic();
-				thisGame.addPlayer(new Player());
-				thisGame.addPlayer(new Player());
-				game.setPlayerName(thisGame.getPlayer().getName());
-				game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
-				game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
-			}
 			if(game.getPlayAgain()== false){
 				game.EnablePlayAgain();
 			}
 			if (game.getDeal() == false && game.getPlayAgain()) {
 				//when player wants to increase bet
-				//doing betIncrement at 100 for now, we can make custom in a later version
-				
-				Player.ResetPlayers();
-				
-				
+				//doing betIncrement at 200 for now, we can make custom in a later version
 				if(thisGame.getPlayer().getChips() > 0){
-				
-				
 					game.DisableNewGame();
 					game.setFirstHand(true);
 					game.DisableHit();
@@ -97,7 +62,7 @@ public class GameLogic {
 					game.DisableDouble();
 					game.EnableDeal();
 					
-					
+					game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
 					// enable or disable buttons for increasing and decreasing bet.
 					if(thisGame.getPlayer().getChips()-thisGame.getPlayer().getBet()>=betIncrement)
 						game.EnableIncrease();
@@ -108,6 +73,7 @@ public class GameLogic {
 					else
 						game.DisableDecrease();
 					
+					//when player wants to increase bet
 					if(game.getIncrease()){
 						thisGame.getPlayer().increaseBet(betIncrement);
 						game.setBetAmount(Integer.toString(thisGame.getPlayer().getBet()));
@@ -122,6 +88,7 @@ public class GameLogic {
 					}
 				}
 				else{
+					// This all resets the game.
 					game.setFirstHand(false);
 					game.resetDeal();
 					game.resetDecrease();
@@ -137,10 +104,7 @@ public class GameLogic {
 					game.DisableDecrease();
 					game.DisableIncrease();
 					game.DisableDouble();
-					
-					thisGame = new BlackjackLogic();
-					thisGame.addPlayer(new Player());
-					thisGame.addPlayer(new Player());
+					thisGame.resetGame();
 					
 					game.setPlayerName(thisGame.getPlayer().getName());
 					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
@@ -167,14 +131,12 @@ public class GameLogic {
 					}
 					game.setShuffleAmount(Integer.toString(5-thisGame.getRounds()%5));
 					thisGame.discardHands();
-					
-
-					
 					thisGame.dealHand(deck);
 					thisGame.dealHand(deck);
 					game.setPlayerCards(thisGame.getPlayer().getHand());
 					game.setDealerCards(thisGame.getDealer().getHand());
 					thisGame.getPlayer().removeChips(thisGame.getPlayer().getBet());
+					thisGame.getPlayer().setBetOnTable(thisGame.getPlayer().getBet());
 					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
 					// Ensure bet isn't more than chips left.
 					if(thisGame.getPlayer().getChips()<thisGame.getPlayer().getBet()){
@@ -209,7 +171,9 @@ public class GameLogic {
 				//when player has doubled
 				if(game.getDouble()){
 					thisGame.getPlayer().removeChips(thisGame.getPlayer().getBet());
+					thisGame.getPlayer().setBetOnTable(thisGame.getPlayer().getBetOnTable()*2);
 					game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
+					game.setBetAmount(Integer.toString(thisGame.getPlayer().getBetOnTable()));
 					game.DisableDouble();
 					thisGame.getPlayer().receiveCard(deck.dealCard());
 					game.setPlayerCards(thisGame.getPlayer().getHand());
@@ -250,6 +214,7 @@ public class GameLogic {
 						game.getDeal();
 						thisGame.payTheWinners();
 						thisGame.getPlayer().setDoubleDown(false);
+						thisGame.getPlayer().setBetOnTable(thisGame.getPlayer().getBet());
 						game.setChips(Integer.toString(thisGame.getPlayer().getChips()));
 						if(!thisGame.someoneHasChips())
 							game.resetNewGame();
